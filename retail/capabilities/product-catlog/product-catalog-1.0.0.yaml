@@ -2,7 +2,7 @@
 openapi: 3.1.0
 info:
   title: ProductService
-  version: '2024-01-01'
+  version: '1.0.0'
 paths:
   "/categories":
     get:
