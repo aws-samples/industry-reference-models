@@ -1,0 +1,169 @@
+asyncapi: 3.0.0
+info:
+  title: Product Catalog Provider API
+  version: 1.0.0
+  description: API for managing product catalog events.
+servers:
+  production:
+    host: 'arn:aws:events:us-east-1:123456789012:event-bus'
+    pathname: /default
+    protocol: aws-eventbridge
+channels:
+  product/created:
+    address: product/created
+    messages:
+      publishProductCreated.message:
+        contentType: application/json
+        payload:
+          $ref: '#/components/schemas/ProductCreatedEvent'
+    description: Channel for product creation events
+  product/updated:
+    address: product/updated
+    messages:
+      publishProductUpdated.message:
+        contentType: application/json
+        payload:
+          $ref: '#/components/schemas/ProductUpdatedEvent'
+    description: Channel for product update events
+  product/deleted:
+    address: product/deleted
+    messages:
+      publishProductDeleted.message:
+        contentType: application/json
+        payload:
+          $ref: '#/components/schemas/ProductDeletedEvent'
+    description: Channel for product deletion events
+  product/price-updated:
+    address: product/price-updated
+    messages:
+      publishProductPriceUpdated.message:
+        contentType: application/json
+        payload:
+          $ref: '#/components/schemas/ProductPriceUpdatedEvent'
+    description: Channel for product price update events
+  product/stock-level-updated:
+    address: product/stock-level-updated
+    messages:
+      publishProductStockLevelUpdated.message:
+        contentType: application/json
+        payload:
+          $ref: '#/components/schemas/ProductStockLevelUpdatedEvent'
+    description: Channel for product stock level update events
+operations:
+  publishProductCreated:
+    action: receive
+    channel:
+      $ref: '#/channels/product~1created'
+    summary: Publish product created events
+    messages:
+      - $ref: '#/channels/product~1created/messages/publishProductCreated.message'
+  publishProductUpdated:
+    action: receive
+    channel:
+      $ref: '#/channels/product~1updated'
+    summary: Publish product updated events
+    messages:
+      - $ref: '#/channels/product~1updated/messages/publishProductUpdated.message'
+  publishProductDeleted:
+    action: receive
+    channel:
+      $ref: '#/channels/product~1deleted'
+    summary: Publish product deleted events
+    messages:
+      - $ref: '#/channels/product~1deleted/messages/publishProductDeleted.message'
+  publishProductPriceUpdated:
+    action: receive
+    channel:
+      $ref: '#/channels/product~1price-updated'
+    summary: Publish product price updated events
+    messages:
+      - $ref: >-
+          #/channels/product~1price-updated/messages/publishProductPriceUpdated.message
+  publishProductStockLevelUpdated:
+    action: receive
+    channel:
+      $ref: '#/channels/product~1stock-level-updated'
+    summary: Publish product stock level updated events
+    messages:
+      - $ref: >-
+          #/channels/product~1stock-level-updated/messages/publishProductStockLevelUpdated.message
+components:
+  schemas:
+    ProductCreatedEvent:
+      type: object
+      properties:
+        productId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        price:
+          type: number
+          format: float
+        stockLevel:
+          type: number
+    ProductUpdatedEvent:
+      type: object
+      properties:
+        productId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        price:
+          type: number
+          format: float
+        stockLevel:
+          type: number
+    ProductDeletedEvent:
+      type: object
+      properties:
+        productId:
+          type: string
+    ProductPriceUpdatedEvent:
+      type: object
+      properties:
+        productId:
+          type: string
+        oldPrice:
+          type: number
+          format: float
+        newPrice:
+          type: number
+          format: float
+    ProductStockLevelUpdatedEvent:
+      type: object
+      properties:
+        productId:
+          type: string
+        oldStockLevel:
+          type: number
+        newStockLevel:
+          type: number
+  messages:
+    ProductCreated:
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ProductCreatedEvent'
+    ProductUpdated:
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ProductUpdatedEvent'
+    ProductDeleted:
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ProductDeletedEvent'
+    ProductPriceUpdated:
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ProductPriceUpdatedEvent'
+    ProductStockLevelUpdated:
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ProductStockLevelUpdatedEvent'
