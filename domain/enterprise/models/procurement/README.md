@@ -4,15 +4,15 @@ The **ProcurementService** API allows you to generate content for a Request for 
 
 ## API Overview
 
-The ProcurementService API provides a single operation, `GenerateRFI`, which is designed to generate a Request for Information (RFI) based on input from the organization. The response contains all the necessary sections for the RFI, including the purpose, key requirements, and instructions for vendors on how to respond.
+The ProcurementService API provides a single operation, `POST /rfi`, which is designed to generate a Request for Information (RFI) based on input from the organization. The response contains all the necessary sections for the RFI, including the purpose, key requirements, and instructions for vendors on how to respond.
 
-### Operation: `POST /GenerateRFI`
+### Operation: `POST /rfi`
 
 This operation generates content for a Request for Information (RFI). The user sends input details such as the purpose of the RFI, key requirements, and a brief summary of the organization's mission, and the service responds with a well-structured RFI that includes legal disclaimers, instructions, and clarifications.
 
 ## Input Schema
 
-The input for the `GenerateRFI` operation consists of the following fields:
+The input for the `POST /rfi` operation consists of the following fields:
 
 ### `GenerateRFIInput`
 
@@ -27,7 +27,7 @@ The input for the `GenerateRFI` operation consists of the following fields:
 
 ## Output Schema
 
-The output from the `GenerateRFI` operation consists of several fields that can be used to generate the RFI document:
+The output from the `POST /rfi` operation consists of several fields that can be used to generate the RFI document:
 
 ### `GenerateRFIOutput`
 
@@ -65,7 +65,7 @@ Each key requirement has the following fields:
 ## Example Request
 
 ```json
-POST /GenerateRFI
+POST /rfi
 {
   "RFIPurpose": "Procure IT consulting services for cloud migration.",
   "KeyRequirements": "1. Vendor must be AWS certified, 2. Experience with hybrid cloud solutions.",
