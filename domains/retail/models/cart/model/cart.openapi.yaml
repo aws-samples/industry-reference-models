@@ -1,0 +1,446 @@
+openapi: 3.0.3
+info:
+  title: Cart Service API
+  version: "2024-01-01"
+  description: "Cart Service API for managing shopping carts and cart items."
+
+paths:
+  /carts:
+    post:
+      summary: "Creates a new cart with an optional list of items."
+      operationId: createCart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCartRequest'
+      responses:
+        '201':
+          description: "The created cart."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCartResponse'
+
+    get:
+      summary: "Retrieves a paginated list of all carts."
+      operationId: listCarts
+      parameters:
+        - name: nextToken
+          in: query
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "A list of cart summaries."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListCartsResponse'
+
+  /carts/{cartId}:
+    get:
+      summary: "Retrieves a cart by cartId."
+      operationId: getCart
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          description: "The ID of the cart."
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      responses:
+        '200':
+          description: "The cart details."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCartResponse'
+
+    patch:
+      summary: "Updates an existing cart."
+      operationId: updateCart
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          description: "The ID of the cart."
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCartRequest'
+      responses:
+        '200':
+          description: "The updated cart."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateCartResponse'
+
+    delete:
+      summary: "Deletes a cart by cartId."
+      operationId: deleteCart
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          description: "The ID of the cart."
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      responses:
+        '204':
+          description: "The cart was deleted."
+
+  /carts/{cartId}/items:
+    post:
+      summary: "Creates a new cart item in the specified cart."
+      operationId: createCartItem
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCartItemRequest'
+      responses:
+        '201':
+          description: "The cart item was created."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCartItemResponse'
+
+    get:
+      summary: "Retrieves all items in the specified cart."
+      operationId: listCartItems
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      responses:
+        '200':
+          description: "A list of cart items."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListCartItemsResponse'
+
+  /carts/{cartId}/items/{cartItemId}:
+    get:
+      summary: "Retrieves details for a specific cart item."
+      operationId: getCartItem
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+        - name: cartItemId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      responses:
+        '200':
+          description: "The cart item details."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCartItemResponse'
+
+    patch:
+      summary: "Updates a specific cart item."
+      operationId: updateCartItem
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+        - name: cartItemId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCartItemRequest'
+      responses:
+        '200':
+          description: "The cart item was updated."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateCartItemResponse'
+
+    delete:
+      summary: "Deletes a cart item by cartItemId."
+      operationId: deleteCartItem
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+        - name: cartItemId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      responses:
+        '204':
+          description: "The cart item was deleted."
+
+components:
+  schemas:
+    CreateCartRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        customerContext:
+          $ref: '#/components/schemas/CustomerContext'
+        couponCodes:
+          type: string
+        created:
+          type: string
+          format: date-time
+        modified:
+          type: string
+          format: date-time
+        totalItems:
+          type: integer
+        totalUniqueItems:
+          type: integer
+        totalAmount:
+          type: number
+        totalDiscount:
+          type: number
+        totalTax:
+          type: number
+        subTotal:
+          type: number
+        currency:
+          type: string
+
+    CreateCartResponse:
+      type: object
+
+    GetCartResponse:
+      type: object
+      properties:
+        cartId:
+          type: string
+          pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+        name:
+          type: string
+        description:
+          type: string
+        customerContext:
+          $ref: '#/components/schemas/CustomerContext'
+        couponCodes:
+          type: string
+        created:
+          type: string
+          format: date-time
+        modified:
+          type: string
+          format: date-time
+        totalItems:
+          type: integer
+        totalUniqueItems:
+          type: integer
+        totalAmount:
+          type: number
+        totalDiscount:
+          type: number
+        totalTax:
+          type: number
+        subTotal:
+          type: number
+        currency:
+          type: string
+
+    UpdateCartRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        customerContext:
+          $ref: '#/components/schemas/CustomerContext'
+        couponCodes:
+          type: string
+        created:
+          type: string
+          format: date-time
+        modified:
+          type: string
+          format: date-time
+        totalItems:
+          type: integer
+        totalUniqueItems:
+          type: integer
+        totalAmount:
+          type: number
+        totalDiscount:
+          type: number
+        totalTax:
+          type: number
+        subTotal:
+          type: number
+        currency:
+          type: string
+
+    UpdateCartResponse:
+      type: object
+
+    CreateCartItemRequest:
+      type: object
+      properties:
+        productId:
+          type: string
+        sku:
+          type: string
+        quantity:
+          type: integer
+        attributes:
+          $ref: '#/components/schemas/Attributes'
+        created:
+          type: string
+          format: date-time
+        modified:
+          type: string
+          format: date-time
+
+    CreateCartItemResponse:
+      type: object
+
+    GetCartItemResponse:
+      type: object
+      properties:
+        cartItemId:
+          type: string
+          pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+        productId:
+          type: string
+        sku:
+          type: string
+        quantity:
+          type: integer
+        attributes:
+          $ref: '#/components/schemas/Attributes'
+        created:
+          type: string
+          format: date-time
+        modified:
+          type: string
+          format: date-time
+
+    ListCartItemsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetCartItemResponse'
+
+    UpdateCartItemRequest:
+      type: object
+      properties:
+        productId:
+          type: string
+        sku:
+          type: string
+        quantity:
+          type: integer
+        attributes:
+          $ref: '#/components/schemas/Attributes'
+        created:
+          type: string
+          format: date-time
+        modified:
+          type: string
+          format: date-time
+
+    UpdateCartItemResponse:
+      type: object
+
+    ListCartsResponse:
+      type: object
+      properties:
+        nextToken:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartSummary'
+
+    CartSummary:
+      type: object
+      properties:
+        cartId:
+          type: string
+          pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+        name:
+          type: string
+
+    CustomerContext:
+      type: object
+      properties:
+        id:
+          type: string
+          description: "The customer's unique ID."
+        customerType:
+          type: string
+          description: "The type of customer."
+        attributes:
+          $ref: '#/components/schemas/Attributes'
+
+    Attribute:
+      type: object
+      properties:
+        key:
+          type: string
+          description: "The attribute's unique key."
+        value:
+          type: string
+          description: "The attribute's value."
+
+    Attributes:
+      type: array
+      items:
+        $ref: '#/components/schemas/Attribute'

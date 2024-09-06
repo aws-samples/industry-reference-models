@@ -1,0 +1,277 @@
+openapi: 3.0.3
+info:
+  title: Customer Service API
+  version: "2024-01-01"
+  description: "Customer Service API for managing customer records and operations."
+
+paths:
+  /customers:
+    post:
+      summary: "Creates a new customer record."
+      operationId: createCustomer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomerRequest'
+      responses:
+        '201':
+          description: "The created customer record."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCustomerResponse'
+
+  /customers/{customerId}:
+    get:
+      summary: "Retrieves details for a specific customer."
+      operationId: getCustomer
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: "The unique identifier for the customer."
+          schema:
+            type: string
+            pattern: '^[A-Za-z0-9]+$'
+      responses:
+        '200':
+          description: "The customer details."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCustomerResponse'
+
+    patch:
+      summary: "Updates an existing customer record."
+      operationId: updateCustomer
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: "The unique identifier for the customer."
+          schema:
+            type: string
+            pattern: '^[A-Za-z0-9]+$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomerRequest'
+      responses:
+        '200':
+          description: "The updated customer record."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateCustomerResponse'
+
+    delete:
+      summary: "Deletes a customer record."
+      operationId: deleteCustomer
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: "The unique identifier for the customer."
+          schema:
+            type: string
+            pattern: '^[A-Za-z0-9]+$'
+      responses:
+        '204':
+          description: "The customer record was deleted."
+
+components:
+  schemas:
+    CreateCustomerRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: "The first name of the customer."
+        lastName:
+          type: string
+          description: "The last name of the customer."
+        email:
+          type: string
+          description: "The email of the customer."
+        phone:
+          type: string
+          description: "The phone number of the customer."
+        countryCode:
+          type: string
+          description: "The 2-letter ISO country code for the customer's location."
+        billingAddress:
+          $ref: '#/components/schemas/Address'
+        shippingAddress:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+
+    CreateCustomerResponse:
+      type: object
+      properties:
+        customerId:
+          type: string
+          description: "The unique identifier for the customer."
+        firstName:
+          type: string
+          description: "The first name of the customer."
+        lastName:
+          type: string
+          description: "The last name of the customer."
+        email:
+          type: string
+          description: "The email of the customer."
+        phone:
+          type: string
+          description: "The phone number of the customer."
+        countryCode:
+          type: string
+          description: "The 2-letter ISO country code for the customer's location."
+        billingAddress:
+          $ref: '#/components/schemas/Address'
+        shippingAddress:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+        created:
+          type: string
+          format: date-time
+          description: "The timestamp when the customer record was created."
+        modified:
+          type: string
+          format: date-time
+          description: "The timestamp when the customer record was last modified."
+        status:
+          $ref: '#/components/schemas/Status'
+
+    GetCustomerResponse:
+      type: object
+      properties:
+        customerId:
+          type: string
+          description: "The unique identifier for the customer."
+        firstName:
+          type: string
+          description: "The first name of the customer."
+        lastName:
+          type: string
+          description: "The last name of the customer."
+        email:
+          type: string
+          description: "The email of the customer."
+        phone:
+          type: string
+          description: "The phone number of the customer."
+        countryCode:
+          type: string
+          description: "The 2-letter ISO country code for the customer's location."
+        billingAddress:
+          $ref: '#/components/schemas/Address'
+        shippingAddress:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+        created:
+          type: string
+          format: date-time
+          description: "The timestamp when the customer record was created."
+        modified:
+          type: string
+          format: date-time
+          description: "The timestamp when the customer record was last modified."
+        status:
+          $ref: '#/components/schemas/Status'
+
+    UpdateCustomerRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: "The first name of the customer."
+        lastName:
+          type: string
+          description: "The last name of the customer."
+        email:
+          type: string
+          description: "The email of the customer."
+        phone:
+          type: string
+          description: "The phone number of the customer."
+        countryCode:
+          type: string
+          description: "The 2-letter ISO country code for the customer's location."
+        billingAddress:
+          $ref: '#/components/schemas/Address'
+        shippingAddress:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+
+    UpdateCustomerResponse:
+      type: object
+      properties:
+        customerId:
+          type: string
+          description: "The unique identifier for the customer."
+        firstName:
+          type: string
+          description: "The first name of the customer."
+        lastName:
+          type: string
+          description: "The last name of the customer."
+        email:
+          type: string
+          description: "The email of the customer."
+        phone:
+          type: string
+          description: "The phone number of the customer."
+        countryCode:
+          type: string
+          description: "The 2-letter ISO country code for the customer's location."
+        billingAddress:
+          $ref: '#/components/schemas/Address'
+        shippingAddress:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+        created:
+          type: string
+          format: date-time
+          description: "The timestamp when the customer record was created."
+        modified:
+          type: string
+          format: date-time
+          description: "The timestamp when the customer record was last modified."
+        status:
+          $ref: '#/components/schemas/Status'
+
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+          description: "The street line of the address."
+        city:
+          type: string
+          description: "The city of the address."
+        state:
+          type: string
+          description: "The state or province of the address."
+        zipCode:
+          type: string
+          description: "The postal or zip code of the address."
+        country:
+          type: string
+          description: "The country of the address."
+
+    Status:
+      type: string
+      description: "The status of a customer account."
+      enum:
+        - ACTIVE
+        - INACTIVE
+        - BLOCKED
