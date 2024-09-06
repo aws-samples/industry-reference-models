@@ -1,0 +1,667 @@
+openapi: 3.0.3
+info:
+  title: Loyalty Service API
+  version: "2024-01-01"
+  description: "The Loyalty Service API provides operations to manage loyalty members, transactions, and promotions."
+
+paths:
+  /loyalty/members:
+    post:
+      summary: "Enroll a new member."
+      operationId: enrollMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnrollMemberRequest'
+      responses:
+        '201':
+          description: "The created member."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollMemberResponse'
+
+    get:
+      summary: "List loyalty members."
+      operationId: listMembers
+      parameters:
+        - name: nextToken
+          in: query
+          schema:
+            type: string
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+        - name: tier
+          in: query
+          schema:
+            $ref: '#/components/schemas/LoyaltyTier'
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/LoyaltyMemberStatus'
+      responses:
+        '200':
+          description: "A list of loyalty members."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListMembersResponse'
+
+  /loyalty/members/{memberId}:
+    get:
+      summary: "Retrieve member details."
+      operationId: getMember
+      parameters:
+        - name: memberId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      responses:
+        '200':
+          description: "The member details."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetMemberResponse'
+
+    put:
+      summary: "Update member information."
+      operationId: updateMember
+      parameters:
+        - name: memberId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMemberRequest'
+      responses:
+        '200':
+          description: "The updated member."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateMemberResponse'
+
+    delete:
+      summary: "Delete a member."
+      operationId: deleteMember
+      parameters:
+        - name: memberId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      responses:
+        '204':
+          description: "The member was deleted."
+
+  /loyalty/transactions:
+    post:
+      summary: "Create a new transaction."
+      operationId: createTransaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTransactionRequest'
+      responses:
+        '201':
+          description: "The created transaction."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateTransactionResponse'
+
+    get:
+      summary: "List loyalty transactions."
+      operationId: listTransactions
+      parameters:
+        - name: nextToken
+          in: query
+          schema:
+            type: string
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+        - name: memberId
+          in: query
+          schema:
+            $ref: '#/components/schemas/MemberId'
+        - name: type
+          in: query
+          schema:
+            $ref: '#/components/schemas/TransactionType'
+      responses:
+        '200':
+          description: "A list of loyalty transactions."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListTransactionsResponse'
+
+  /loyalty/transactions/{transactionId}:
+    get:
+      summary: "Retrieve transaction details."
+      operationId: getTransaction
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      responses:
+        '200':
+          description: "The transaction details."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTransactionResponse'
+
+  /loyalty/promotions:
+    post:
+      summary: "Create a new promotion."
+      operationId: createPromotion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePromotionRequest'
+      responses:
+        '201':
+          description: "The created promotion."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePromotionResponse'
+
+    get:
+      summary: "List promotions."
+      operationId: listPromotions
+      parameters:
+        - name: nextToken
+          in: query
+          schema:
+            type: string
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/PromotionStatus'
+      responses:
+        '200':
+          description: "A list of promotions."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListPromotionsResponse'
+
+  /loyalty/promotions/{promotionId}:
+    get:
+      summary: "Retrieve promotion details."
+      operationId: getPromotion
+      parameters:
+        - name: promotionId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      responses:
+        '200':
+          description: "The promotion details."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPromotionResponse'
+
+    put:
+      summary: "Update promotion details."
+      operationId: updatePromotion
+      parameters:
+        - name: promotionId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePromotionRequest'
+      responses:
+        '200':
+          description: "The updated promotion."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdatePromotionResponse'
+
+    delete:
+      summary: "Delete a promotion."
+      operationId: deletePromotion
+      parameters:
+        - name: promotionId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      responses:
+        '204':
+          description: "The promotion was deleted."
+
+components:
+  schemas:
+    CustomerId:
+      type: string
+      description: "UUID pattern for customer ID."
+      pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+
+    MemberId:
+      type: string
+      description: "UUID pattern for member ID."
+      pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+
+    TransactionId:
+      type: string
+      description: "UUID pattern for transaction ID."
+      pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+
+    PromotionId:
+      type: string
+      description: "UUID pattern for promotion ID."
+      pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+
+    LoyaltyTier:
+      type: string
+      enum:
+        - BRONZE
+        - SILVER
+        - GOLD
+        - PLATINUM
+      description: "Possible tiers for a loyalty member."
+
+    LoyaltyMemberStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+        - SUSPENDED
+      description: "Possible statuses for a loyalty member."
+
+    TransactionType:
+      type: string
+      enum:
+        - EARN
+        - REDEEM
+        - ADJUST
+        - EXPIRE
+      description: "Possible types for a transaction."
+
+    PromotionType:
+      type: string
+      enum:
+        - POINTS_MULTIPLIER
+        - BONUS_POINTS
+        - TIER_UPGRADE
+      description: "Possible types for a promotion."
+
+    PromotionStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+        - SCHEDULED
+        - EXPIRED
+      description: "Possible statuses for a promotion."
+
+    EnrollMemberRequest:
+      type: object
+      properties:
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+        tier:
+          $ref: '#/components/schemas/LoyaltyTier'
+
+    EnrollMemberResponse:
+      type: object
+      properties:
+        memberId:
+          $ref: '#/components/schemas/MemberId'
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+        tier:
+          $ref: '#/components/schemas/LoyaltyTier'
+        points:
+          type: integer
+        enrollmentDate:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/LoyaltyMemberStatus'
+
+    GetMemberResponse:
+      type: object
+      properties:
+        memberId:
+          $ref: '#/components/schemas/MemberId'
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+        tier:
+          $ref: '#/components/schemas/LoyaltyTier'
+        points:
+          type: integer
+        enrollmentDate:
+          type: string
+          format: date-time
+        lastActivityDate:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/LoyaltyMemberStatus'
+
+    UpdateMemberRequest:
+      type: object
+      properties:
+        memberId:
+          $ref: '#/components/schemas/MemberId'
+        tier:
+          $ref: '#/components/schemas/LoyaltyTier'
+        points:
+          type: integer
+        status:
+          $ref: '#/components/schemas/LoyaltyMemberStatus'
+
+    UpdateMemberResponse:
+      type: object
+      properties:
+        memberId:
+          $ref: '#/components/schemas/MemberId'
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+        tier:
+          $ref: '#/components/schemas/LoyaltyTier'
+        points:
+          type: integer
+        enrollmentDate:
+          type: string
+          format: date-time
+        lastActivityDate:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/LoyaltyMemberStatus'
+
+    CreateTransactionRequest:
+      type: object
+      properties:
+        memberId:
+          $ref: '#/components/schemas/MemberId'
+        type:
+          $ref: '#/components/schemas/TransactionType'
+        points:
+          type: integer
+        amount:
+          type: number
+          format: double
+        currency:
+          type: string
+        description:
+          type: string
+
+    CreateTransactionResponse:
+      type: object
+      properties:
+        transactionId:
+          $ref: '#/components/schemas/TransactionId'
+        memberId:
+          $ref: '#/components/schemas/MemberId'
+        type:
+          $ref: '#/components/schemas/TransactionType'
+        points:
+          type: integer
+        amount:
+          type: number
+          format: double
+        currency:
+          type: string
+        description:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+    GetTransactionResponse:
+      type: object
+      properties:
+        transactionId:
+          $ref: '#/components/schemas/TransactionId'
+        memberId:
+          $ref: '#/components/schemas/MemberId'
+        type:
+          $ref: '#/components/schemas/TransactionType'
+        points:
+          type: integer
+        amount:
+          type: number
+          format: double
+        currency:
+          type: string
+        description:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+    ListTransactionsResponse:
+      type: object
+      properties:
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/LoyaltyTransactionSummary'
+        nextToken:
+          type: string
+
+    LoyaltyTransactionSummary:
+      type: object
+      properties:
+        transactionId:
+          $ref: '#/components/schemas/TransactionId'
+        memberId:
+          $ref: '#/components/schemas/MemberId'
+        type:
+          $ref: '#/components/schemas/TransactionType'
+        points:
+          type: integer
+        amount:
+          type: number
+          format: double
+        currency:
+          type: string
+        description:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+    CreatePromotionRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        type:
+          $ref: '#/components/schemas/PromotionType'
+        pointsMultiplier:
+          type: number
+          format: double
+        minimumPurchaseAmount:
+          type: number
+          format: double
+        status:
+          $ref: '#/components/schemas/PromotionStatus'
+
+    CreatePromotionResponse:
+      type: object
+      properties:
+        promotionId:
+          $ref: '#/components/schemas/PromotionId'
+        name:
+          type: string
+        description:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        type:
+          $ref: '#/components/schemas/PromotionType'
+        pointsMultiplier:
+          type: number
+          format: double
+        minimumPurchaseAmount:
+          type: number
+          format: double
+        status:
+          $ref: '#/components/schemas/PromotionStatus'
+
+    GetPromotionResponse:
+      type: object
+      properties:
+        promotionId:
+          $ref: '#/components/schemas/PromotionId'
+        name:
+          type: string
+        description:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        type:
+          $ref: '#/components/schemas/PromotionType'
+        pointsMultiplier:
+          type: number
+          format: double
+        minimumPurchaseAmount:
+          type: number
+          format: double
+        status:
+          $ref: '#/components/schemas/PromotionStatus'
+
+    UpdatePromotionRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        type:
+          $ref: '#/components/schemas/PromotionType'
+        pointsMultiplier:
+          type: number
+          format: double
+        minimumPurchaseAmount:
+          type: number
+          format: double
+        status:
+          $ref: '#/components/schemas/PromotionStatus'
+
+    UpdatePromotionResponse:
+      type: object
+      properties:
+        promotionId:
+          $ref: '#/components/schemas/PromotionId'
+        name:
+          type: string
+        description:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        type:
+          $ref: '#/components/schemas/PromotionType'
+        pointsMultiplier:
+          type: number
+          format: double
+        minimumPurchaseAmount:
+          type: number
+          format: double
+        status:
+          $ref: '#/components/schemas/PromotionStatus'
+
+    ListPromotionsResponse:
+      type: object
+      properties:
+        promotions:
+          type: array
+          items:
+            $ref: '#/components/schemas/LoyaltyPromotionSummary'
+        nextToken:
+          type: string
+
+    LoyaltyPromotionSummary:
+      type: object
+      properties:
+        promotionId:
+          $ref: '#/components/schemas/PromotionId'
+        name:
+          type: string
+        description:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        type:
+          $ref: '#/components/schemas/PromotionType'
+        pointsMultiplier:
+          type: number
+          format: double
+        status:
+          $ref: '#/components/schemas/PromotionStatus'

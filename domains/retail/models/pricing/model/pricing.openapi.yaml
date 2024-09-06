@@ -1,0 +1,319 @@
+openapi: 3.0.3
+info:
+  title: Pricing Service API
+  description: "API for managing pricing rules, item prices, and real-time data feeds."
+  version: "2024-01-01"
+
+paths:
+  /pricing-rules:
+    get:
+      summary: "Retrieves a list of pricing rules."
+      description: "Supports filtering based on start and end timestamps."
+      operationId: ListPriceRule
+      parameters:
+        - name: limit
+          in: query
+          description: "Maximum number of pricing rules to retrieve."
+          schema:
+            type: integer
+        - name: endsAtMax
+          in: query
+          description: "Retrieve rules that end before this timestamp."
+          schema:
+            type: string
+            format: date-time
+        - name: endsAtMin
+          in: query
+          description: "Retrieve rules that end after this timestamp."
+          schema:
+            type: string
+            format: date-time
+        - name: startsAtMax
+          in: query
+          description: "Retrieve rules that start before this timestamp."
+          schema:
+            type: string
+            format: date-time
+        - name: startsAtMin
+          in: query
+          description: "Retrieve rules that start after this timestamp."
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: "A list of pricing rules."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListPriceRuleResponse'
+        '400':
+          $ref: '#/components/responses/InvalidRequestException'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /pricing-rules/{pricingRuleId}:
+    get:
+      summary: "Retrieves a specific pricing rule by its ID."
+      operationId: GetPriceRule
+      parameters:
+        - name: pricingRuleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/PricingRuleId'
+      responses:
+        '200':
+          description: "A specific pricing rule."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPriceRuleResponse'
+        '404':
+          $ref: '#/components/responses/PriceRuleNotFoundException'
+        '400':
+          $ref: '#/components/responses/InvalidRequestException'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      summary: "Creates a new pricing rule."
+      operationId: CreatePriceRule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePriceRuleRequest'
+      responses:
+        '201':
+          description: "The created pricing rule."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePriceRuleResponse'
+        '400':
+          $ref: '#/components/responses/InvalidRequestException'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      summary: "Updates an existing pricing rule."
+      operationId: UpdatePriceRule
+      parameters:
+        - name: pricingRuleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/PricingRuleId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePriceRuleRequest'
+      responses:
+        '200':
+          description: "The updated pricing rule."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdatePriceRuleResponse'
+        '404':
+          $ref: '#/components/responses/PriceRuleNotFoundException'
+        '400':
+          $ref: '#/components/responses/InvalidRequestException'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      summary: "Deletes a pricing rule by its ID."
+      operationId: DeletePriceRule
+      parameters:
+        - name: pricingRuleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/PricingRuleId'
+      responses:
+        '204':
+          description: "Pricing rule deleted."
+        '404':
+          $ref: '#/components/responses/PriceRuleNotFoundException'
+        '400':
+          $ref: '#/components/responses/InvalidRequestException'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /prices/{priceId}:
+    get:
+      summary: "Retrieves price details by ID."
+      operationId: GetPriceById
+      parameters:
+        - name: priceId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/PriceId'
+      responses:
+        '200':
+          description: "Price details for the specified ID."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPriceByIdResponse'
+        '404':
+          $ref: '#/components/responses/PriceNotFoundException'
+        '400':
+          $ref: '#/components/responses/InvalidRequestException'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      summary: "Updates the price details for an item by SKU."
+      operationId: UpdatePrice
+      parameters:
+        - name: priceId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/PriceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePriceRequest'
+      responses:
+        '200':
+          description: "The updated price."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdatePriceResponse'
+        '400':
+          $ref: '#/components/responses/InvalidRequestException'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      summary: "Deletes a price by its ID."
+      operationId: DeletePrice
+      parameters:
+        - name: priceId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/PriceId'
+      responses:
+        '204':
+          description: "Price deleted."
+        '404':
+          $ref: '#/components/responses/PriceNotFoundException'
+        '400':
+          $ref: '#/components/responses/InvalidRequestException'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    PricingRuleId:
+      type: string
+      description: "The unique identifier for the pricing rule."
+      pattern: '^[A-Za-z0-9 ]+$'
+
+    PriceId:
+      type: string
+      description: "The unique identifier for the price."
+      pattern: '^[A-Za-z0-9 ]+$'
+
+    Price:
+      type: object
+      description: "A structure representing a price."
+      properties:
+        priceId:
+          $ref: '#/components/schemas/PriceId'
+        itemSku:
+          $ref: '#/components/schemas/ItemSku'
+        itemId:
+          $ref: '#/components/schemas/ItemId'
+        basePrice:
+          type: number
+        salesPrice:
+          type: number
+        currency:
+          type: string
+        priceRuleApplied:
+          $ref: '#/components/schemas/PricingRuleIds'
+        created:
+          type: string
+          format: date-time
+        modified:
+          type: string
+          format: date-time
+
+    ListPriceRuleResponse:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/PriceRule'
+
+    GetPriceRuleResponse:
+      type: object
+      properties:
+        priceRule:
+          $ref: '#/components/schemas/PriceRule'
+
+    CreatePriceRuleRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        valueType:
+          $ref: '#/components/schemas/ValueType'
+        value:
+          type: number
+
+    CreatePriceRuleResponse:
+      type: object
+      properties:
+        priceRule:
+          $ref: '#/components/schemas/PriceRule'
+
+    UpdatePriceRuleRequest:
+      type: object
+      properties:
+        title:
+          type: string
+
+    UpdatePriceRuleResponse:
+      type: object
+      properties:
+        priceRule:
+          $ref: '#/components/schemas/PriceRule'
+
+    InvalidRequestException:
+      type: object
+      properties:
+        message:
+          type: string
+
+    InternalServerError:
+      type: object
+      properties:
+        message:
+          type: string
+
+    PriceRuleNotFoundException:
+      type: object
+      properties:
+        message:
+          type: string
+
+    PriceNotFoundException:
+      type: object
+      properties:
+        message:
+          type: string

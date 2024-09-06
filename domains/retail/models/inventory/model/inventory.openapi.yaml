@@ -1,0 +1,452 @@
+openapi: 3.0.3
+info:
+  title: Inventory Service API
+  version: "2024-07-17"
+  description: "The Inventory Service provides operations to manage inventories, items, product variants, and locations."
+
+paths:
+  /inventories:
+    post:
+      summary: "Creates a new inventory record."
+      operationId: createInventory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInventoryRequest'
+      responses:
+        '201':
+          description: "The created inventory."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateInventoryResponse'
+
+    get:
+      summary: "Retrieves a paginated list of inventory records."
+      operationId: listInventories
+      parameters:
+        - name: nextToken
+          in: query
+          schema:
+            type: string
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "A list of inventory summaries."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListInventoriesResponse'
+
+  /inventories/{inventoryId}:
+    get:
+      summary: "Retrieves a specific inventory record by its ID."
+      operationId: getInventory
+      parameters:
+        - name: inventoryId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      responses:
+        '200':
+          description: "The inventory details."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetInventoryResponse'
+
+    patch:
+      summary: "Updates an existing inventory record."
+      operationId: updateInventory
+      parameters:
+        - name: inventoryId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateInventoryRequest'
+      responses:
+        '200':
+          description: "The updated inventory."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateInventoryResponse'
+
+    delete:
+      summary: "Deletes a specific inventory record by its ID."
+      operationId: deleteInventory
+      parameters:
+        - name: inventoryId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      responses:
+        '204':
+          description: "The inventory record was deleted."
+
+  /items:
+    post:
+      summary: "Creates a new item."
+      operationId: createItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateItemRequest'
+      responses:
+        '201':
+          description: "The created item."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateItemResponse'
+
+    get:
+      summary: "Retrieves a paginated list of items."
+      operationId: listItems
+      parameters:
+        - name: nextToken
+          in: query
+          schema:
+            type: string
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "A list of item summaries."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListItemsResponse'
+
+  /items/{itemId}:
+    get:
+      summary: "Retrieves a specific item by its ID."
+      operationId: getItem
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      responses:
+        '200':
+          description: "The item details."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetItemResponse'
+
+    patch:
+      summary: "Updates an existing item."
+      operationId: updateItem
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateItemRequest'
+      responses:
+        '200':
+          description: "The updated item."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateItemResponse'
+
+    delete:
+      summary: "Deletes a specific item by its ID."
+      operationId: deleteItem
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      responses:
+        '204':
+          description: "The item was deleted."
+
+components:
+  schemas:
+    CreateInventoryRequest:
+      type: object
+      properties:
+        locationId:
+          type: string
+        itemId:
+          type: string
+        quantity:
+          type: integer
+      required:
+        - locationId
+        - itemId
+        - quantity
+
+    CreateInventoryResponse:
+      type: object
+      properties:
+        inventoryId:
+          type: string
+          format: uuid
+        locationId:
+          type: string
+        itemId:
+          type: string
+        quantity:
+          type: integer
+        updatedAt:
+          type: string
+          format: date-time
+
+    GetInventoryResponse:
+      type: object
+      properties:
+        inventoryId:
+          type: string
+          format: uuid
+        locationId:
+          type: string
+        itemId:
+          type: string
+        quantity:
+          type: integer
+        updatedAt:
+          type: string
+          format: date-time
+
+    UpdateInventoryRequest:
+      type: object
+      properties:
+        locationId:
+          type: string
+        itemId:
+          type: string
+        quantity:
+          type: integer
+
+    UpdateInventoryResponse:
+      type: object
+      properties:
+        inventoryId:
+          type: string
+          format: uuid
+
+    ListInventoriesResponse:
+      type: object
+      properties:
+        nextToken:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/InventorySummary'
+
+    InventorySummary:
+      type: object
+      properties:
+        inventoryId:
+          type: string
+          format: uuid
+        locationId:
+          type: string
+        itemId:
+          type: string
+        quantity:
+          type: integer
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateItemRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        sku:
+          type: string
+        cost:
+          type: number
+          format: double
+        countryCodeOfOrigin:
+          type: string
+        countryHarmonizedSystemCodes:
+          type: array
+          items:
+            type: string
+        harmonizedSystemCode:
+          type: integer
+        provinceCodeOfOrigin:
+          type: string
+        tracked:
+          type: boolean
+        requiresShipping:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - name
+        - description
+        - sku
+        - cost
+        - countryCodeOfOrigin
+        - harmonizedSystemCode
+
+    CreateItemResponse:
+      type: object
+      properties:
+        itemId:
+          type: string
+          format: uuid
+
+    GetItemResponse:
+      type: object
+      properties:
+        itemId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        sku:
+          type: string
+        cost:
+          type: number
+          format: double
+        countryCodeOfOrigin:
+          type: string
+        countryHarmonizedSystemCodes:
+          type: array
+          items:
+            type: string
+        harmonizedSystemCode:
+          type: integer
+        provinceCodeOfOrigin:
+          type: string
+        tracked:
+          type: boolean
+        requiresShipping:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    UpdateItemRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        sku:
+          type: string
+        cost:
+          type: number
+          format: double
+        countryCodeOfOrigin:
+          type: string
+        countryHarmonizedSystemCodes:
+          type: array
+          items:
+            type: string
+        harmonizedSystemCode:
+          type: integer
+        provinceCodeOfOrigin:
+          type: string
+        tracked:
+          type: boolean
+        requiresShipping:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    UpdateItemResponse:
+      type: object
+      properties:
+        itemId:
+          type: string
+          format: uuid
+
+    ListItemsResponse:
+      type: object
+      properties:
+        nextToken:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemSummary'
+
+    ItemSummary:
+      type: object
+      properties:
+        itemId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        sku:
+          type: string
+        cost:
+          type: number
+          format: double
+        countryCodeOfOrigin:
+          type: string
+        harmonizedSystemCode:
+          type: integer
+        provinceCodeOfOrigin:
+          type: string
+        tracked:
+          type: boolean
+        requiresShipping:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time

@@ -1,0 +1,228 @@
+openapi: 3.0.3
+info:
+  title: Order Service API
+  version: "2024-01-01"
+  description: "Order Service API for managing orders and related operations."
+
+paths:
+  /orders:
+    get:
+      summary: "Retrieves a list of orders."
+      operationId: getOrders
+      parameters:
+        - name: nextToken
+          in: query
+          description: "Specifies the beginning of the next page of results."
+          schema:
+            type: string
+        - name: pageSize
+          in: query
+          description: "The maximum number of results to return at once."
+          schema:
+            type: integer
+        - name: customerFilter
+          in: query
+          description: "Filters orders by customer ID."
+          schema:
+            type: string
+        - name: keywordFilter
+          in: query
+          description: "Filter orders by keyword."
+          schema:
+            type: string
+        - name: timeFilter
+          in: query
+          description: "Filter orders by time period. Valid values are 'last30', 'last90', or a year value, such as 'year-2022'."
+          schema:
+            type: string
+        - name: orderStatusFilter
+          in: query
+          description: "Filters orders by order status."
+          schema:
+            type: string
+            enum:
+              - PRE_ORDER
+              - PENDING
+              - PROCESSING
+              - CONFIRMED
+              - SHIPPED
+              - DELIVERED
+              - PARTIALLY_SHIPPED
+              - CANCELLED
+              - ON_HOLD
+              - BACKORDERED
+              - COMPLETED
+      responses:
+        '200':
+          description: "A list of order summaries."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOrdersResponse'
+
+    post:
+      summary: "Creates a new order."
+      operationId: createOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '201':
+          description: "The created order."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateOrderResponse'
+
+  /orders/{orderNumber}:
+    get:
+      summary: "Retrieves details for a specific order."
+      operationId: getOrder
+      parameters:
+        - name: orderNumber
+          in: path
+          required: true
+          description: "The unique identifier for the order."
+          schema:
+            type: string
+            pattern: '^[A-Za-z0-9]+$'
+      responses:
+        '200':
+          description: "The retrieved order details."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOrderResponse'
+
+    put:
+      summary: "Updates an existing order."
+      operationId: updateOrder
+      parameters:
+        - name: orderNumber
+          in: path
+          required: true
+          description: "The unique identifier for the order."
+          schema:
+            type: string
+            pattern: '^[A-Za-z0-9]+$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrderRequest'
+      responses:
+        '200':
+          description: "The updated order."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateOrderResponse'
+
+    delete:
+      summary: "Deletes an order."
+      operationId: deleteOrder
+      parameters:
+        - name: orderNumber
+          in: path
+          required: true
+          description: "The unique identifier for the order."
+          schema:
+            type: string
+            pattern: '^[A-Za-z0-9]+$'
+      responses:
+        '204':
+          description: "The order was deleted."
+
+components:
+  schemas:
+    OrderStatus:
+      type: string
+      enum:
+        - PRE_ORDER
+        - PENDING
+        - PROCESSING
+        - CONFIRMED
+        - SHIPPED
+        - DELIVERED
+        - PARTIALLY_SHIPPED
+        - CANCELLED
+        - ON_HOLD
+        - BACKORDERED
+        - COMPLETED
+
+    PaymentStatus:
+      type: string
+      enum:
+        - PENDING
+        - AUTHORIZED
+        - CAPTURED
+        - INVOICE
+        - PARTIALLY_CAPTURED
+        - FAILED
+        - REFUNDED
+        - VOIDED
+        - EXPIRED
+        - PENDING_REVIEW
+        - CANCELLED
+
+    FulfillmentStatus:
+      type: string
+      enum:
+        - PRE_ORDER
+        - PENDING
+        - PROCESSING
+        - PICK_UP_IN_STORE
+        - SHIPPED
+        - DELIVERED
+        - PARTIALLY_SHIPPED
+        - IN_TRANSIT
+        - OUT_FOR_DELIVERY
+        - ATTEMPTED_DELIVERY
+        - HELD_IN_TRANSIT
+        - RETURNED_TO_SENDER
+        - LOST_IN_TRANSIT
+        - RETURNED
+        - REFUNDED
+        - COMPLETED
+        - CANCELLED
+        - ON_HOLD
+        - BACKORDERED
+
+    RefundStatus:
+      type: string
+      enum:
+        - REQUESTED
+        - PENDING_APPROVAL
+        - APPROVED
+        - PROCESSING
+        - COMPLETED
+        - REJECTED
+        - CANCELLED
+        - PARTIALLY_REFUNDED
+        - REFUND_FAILED
+
+    ReturnStatus:
+      type: string
+      enum:
+        - REQUESTED
+        - PENDING_APPROVAL
+        - APPROVED
+        - PROCESSING
+        - COMPLETED
+        - REJECTED
+        - CANCELLED
+        - PARTIALLY_RETURNED
+        - REFUND_FAILED
+
+    ReturnMethod:
+      type: string
+      enum:
+        - IN_STORE_RETURN
+        - MAIL_RETURN
+        - CURBSIDE_RETURN
+        - LOCKER
+        - DROP_OFF_LOCATION
