@@ -3,10 +3,10 @@ info:
   title: ProcurementService
   version: 1.0.0
   description: |
-    The ProcurementService API allows for the generation of content for Request for Information (RFI).
+    The ProcurementService API allows for the generation of content for a Request for Information (RFI).
     The response will be used to build out a PDF, so it should include anything useful for generating an RFI.
 paths:
-  /GenerateRFI:
+  /rfi:
     post:
       summary: Generate RFI
       description: |
@@ -92,7 +92,7 @@ components:
         Clarifications:
           type: string
           description: |
-            Any clarifications the vendor needs to be aware of when responding to the RFI.
+            Any clarifications vendors need to be aware of when responding to the RFI.
         KeyRequirements:
           $ref: '#/components/schemas/KeyRequirementsList'
           description: |
