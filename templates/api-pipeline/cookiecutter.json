@@ -1,9 +1,6 @@
 {
   "app_name": "my-project",
-  "project": {
-    "name:": "my-project"
-  },
-  "typescript": {
-    "namespace": "myproject"
-  }
+  "project_name": "my-project",
+  "namespace": "com.example",
+  "typescript_namespace": "myproject"
 }

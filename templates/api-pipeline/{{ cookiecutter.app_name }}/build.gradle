@@ -25,7 +25,7 @@ task generateTypeScriptSdk(type: org.openapitools.generator.gradle.plugin.tasks.
     outputDir = "$project.buildDir/generated-sdk/typescript"
 
     configOptions = [
-            npmName        : 'cookiecutter.typescript.namespace',
+            npmName        : '{{cookiecutter.typescript_namespace}}',
             npmVersion     : '1.0.0'
     ]
 }

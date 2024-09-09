@@ -1,1 +1,1 @@
-rootProject.name = '{{cookiecutter.project.name}}'
+rootProject.name = '{{cookiecutter.project_name}}'

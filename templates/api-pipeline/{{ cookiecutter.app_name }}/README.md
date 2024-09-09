@@ -1,1 +1,1 @@
-{{ cookiecutter.project.name }}
+{{ cookiecutter.project_name }}
