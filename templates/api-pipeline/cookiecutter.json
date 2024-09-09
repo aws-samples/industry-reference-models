@@ -1,11 +1,9 @@
 {
-  "config": {
-    "app_name": "my-project",
-    "project": {
-      "name:": "my-project"
-    },
-    "typescript": {
-      "namespace": "myproject"
-    }
+  "app_name": "my-project",
+  "project": {
+    "name:": "my-project"
+  },
+  "typescript": {
+    "namespace": "myproject"
   }
 }
