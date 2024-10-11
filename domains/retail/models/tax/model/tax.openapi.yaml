@@ -1,0 +1,174 @@
+openapi: 3.0.0
+info:
+  title: Tax Calculation API
+  description: API for calculating taxes in international e-commerce transactions
+  version: 1.0.0
+paths:
+  /calculate-tax:
+    post:
+      summary: Calculate tax for a shopping cart
+      description: Calculate the tax for a given shopping cart based on the items, shipping address, and other relevant factors
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaxCalculationRequest'
+      responses:
+        '200':
+          description: Successful tax calculation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaxCalculationResponse'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+  /tax-rates:
+    get:
+      summary: Get tax rates for a specific location
+      description: Retrieve the applicable tax rates for a given location
+      parameters:
+        - name: country
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: state
+          in: query
+          schema:
+            type: string
+        - name: city
+          in: query
+          schema:
+            type: string
+        - name: postalCode
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful retrieval of tax rates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaxRatesResponse'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    TaxCalculationRequest:
+      type: object
+      required:
+        - items
+        - shippingAddress
+        - billingAddress
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+        shippingAddress:
+          $ref: '#/components/schemas/Address'
+        billingAddress:
+          $ref: '#/components/schemas/Address'
+        customerTaxId:
+          type: string
+          description: Tax identification number of the customer (e.g., VAT number)
+        currencyCode:
+          type: string
+          description: ISO 4217 currency code
+    CartItem:
+      type: object
+      required:
+        - productId
+        - quantity
+        - unitPrice
+      properties:
+        productId:
+          type: string
+        quantity:
+          type: integer
+          minimum: 1
+        unitPrice:
+          type: number
+          format: float
+        productType:
+          type: string
+          description: Category or type of product (e.g., digital, physical)
+        hsnCode:
+          type: string
+          description: Harmonized System Nomenclature code for international trade
+    Address:
+      type: object
+      required:
+        - country
+      properties:
+        country:
+          type: string
+        state:
+          type: string
+        city:
+          type: string
+        postalCode:
+          type: string
+        street:
+          type: string
+    TaxCalculationResponse:
+      type: object
+      properties:
+        totalTax:
+          type: number
+          format: float
+        taxBreakdown:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxBreakdownItem'
+        currencyCode:
+          type: string
+    TaxBreakdownItem:
+      type: object
+      properties:
+        taxType:
+          type: string
+          enum: [VAT, GST, SalesTax, ConsumptionTax]
+        taxRate:
+          type: number
+          format: float
+        taxableAmount:
+          type: number
+          format: float
+        taxAmount:
+          type: number
+          format: float
+    TaxRatesResponse:
+      type: object
+      properties:
+        country:
+          type: string
+        state:
+          type: string
+        city:
+          type: string
+        postalCode:
+          type: string
+        taxRates:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxRate'
+    TaxRate:
+      type: object
+      properties:
+        taxType:
+          type: string
+          enum: [VAT, GST, SalesTax, ConsumptionTax]
+        rate:
+          type: number
+          format: float
+        name:
+          type: string
+        description:
+          type: string
