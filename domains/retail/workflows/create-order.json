@@ -8,31 +8,16 @@
       "Parameters": {
         "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
         "Method": "POST",
-        "AllowNullValue": true,
+        "Path": "/carts",
         "Headers": {
-          "Header1": [
-            "HeaderValue1"
-          ],
-          "Header2": [
-            "HeaderValue2",
-            "HeaderValue3"
-          ]
-        },
-        "Stage": "MyStage",
-        "Path": "/pets/dog/1",
-        "QueryParameters": {
-          "QueryParameter1": [
-            "QueryParameterValue1"
-          ],
-          "QueryParameter2": [
-            "QueryParameterValue2",
-            "QueryParameterValue3"
-          ]
+          "Content-Type": ["application/json"]
         },
         "RequestBody": {
-          "Payload": "Hello from Step Functions!"
-        },
-        "AuthType": "IAM_ROLE"
+          "name": "New Order Cart",
+          "customerContext": {
+            "id": "${$.customerId}"
+          }
+        }
       },
       "Next": "For Each Product In Cart"
     },
@@ -55,32 +40,8 @@
                     "Resource": "arn:aws:states:::apigateway:invoke",
                     "Parameters": {
                       "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
-                      "Method": "POST",
-                      "AllowNullValue": true,
-                      "Headers": {
-                        "Header1": [
-                          "HeaderValue1"
-                        ],
-                        "Header2": [
-                          "HeaderValue2",
-                          "HeaderValue3"
-                        ]
-                      },
-                      "Stage": "MyStage",
-                      "Path": "/pets/dog/1",
-                      "QueryParameters": {
-                        "QueryParameter1": [
-                          "QueryParameterValue1"
-                        ],
-                        "QueryParameter2": [
-                          "QueryParameterValue2",
-                          "QueryParameterValue3"
-                        ]
-                      },
-                      "RequestBody": {
-                        "Payload": "Hello from Step Functions!"
-                      },
-                      "AuthType": "IAM_ROLE"
+                      "Method": "GET",
+                      "Path": "/products/${$.productId}"
                     },
                     "End": true
                   }
@@ -94,32 +55,8 @@
                     "Resource": "arn:aws:states:::apigateway:invoke",
                     "Parameters": {
                       "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
-                      "Method": "POST",
-                      "AllowNullValue": true,
-                      "Headers": {
-                        "Header1": [
-                          "HeaderValue1"
-                        ],
-                        "Header2": [
-                          "HeaderValue2",
-                          "HeaderValue3"
-                        ]
-                      },
-                      "Stage": "MyStage",
-                      "Path": "/pets/dog/1",
-                      "QueryParameters": {
-                        "QueryParameter1": [
-                          "QueryParameterValue1"
-                        ],
-                        "QueryParameter2": [
-                          "QueryParameterValue2",
-                          "QueryParameterValue3"
-                        ]
-                      },
-                      "RequestBody": {
-                        "Payload": "Hello from Step Functions!"
-                      },
-                      "AuthType": "IAM_ROLE"
+                      "Method": "GET",
+                      "Path": "/prices/${$.priceId}"
                     },
                     "End": true
                   }
@@ -133,32 +70,12 @@
                     "Resource": "arn:aws:states:::apigateway:invoke",
                     "Parameters": {
                       "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
-                      "Method": "POST",
-                      "AllowNullValue": true,
-                      "Headers": {
-                        "Header1": [
-                          "HeaderValue1"
-                        ],
-                        "Header2": [
-                          "HeaderValue2",
-                          "HeaderValue3"
-                        ]
-                      },
-                      "Stage": "MyStage",
-                      "Path": "/pets/dog/1",
+                      "Method": "GET",
+                      "Path": "/promotions/cart",
                       "QueryParameters": {
-                        "QueryParameter1": [
-                          "QueryParameterValue1"
-                        ],
-                        "QueryParameter2": [
-                          "QueryParameterValue2",
-                          "QueryParameterValue3"
-                        ]
-                      },
-                      "RequestBody": {
-                        "Payload": "Hello from Step Functions!"
-                      },
-                      "AuthType": "IAM_ROLE"
+                        "cartId": ["${$.cartId}"],
+                        "userId": ["${$.customerId}"]
+                      }
                     },
                     "End": true
                   }
@@ -172,32 +89,8 @@
                     "Resource": "arn:aws:states:::apigateway:invoke",
                     "Parameters": {
                       "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
-                      "Method": "POST",
-                      "AllowNullValue": true,
-                      "Headers": {
-                        "Header1": [
-                          "HeaderValue1"
-                        ],
-                        "Header2": [
-                          "HeaderValue2",
-                          "HeaderValue3"
-                        ]
-                      },
-                      "Stage": "MyStage",
-                      "Path": "/pets/dog/1",
-                      "QueryParameters": {
-                        "QueryParameter1": [
-                          "QueryParameterValue1"
-                        ],
-                        "QueryParameter2": [
-                          "QueryParameterValue2",
-                          "QueryParameterValue3"
-                        ]
-                      },
-                      "RequestBody": {
-                        "Payload": "Hello from Step Functions!"
-                      },
-                      "AuthType": "IAM_ROLE"
+                      "Method": "GET",
+                      "Path": "/customers/${$.customerId}"
                     },
                     "End": true
                   }
@@ -215,32 +108,11 @@
       "Resource": "arn:aws:states:::apigateway:invoke",
       "Parameters": {
         "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
-        "Method": "POST",
-        "AllowNullValue": true,
-        "Headers": {
-          "Header1": [
-            "HeaderValue1"
-          ],
-          "Header2": [
-            "HeaderValue2",
-            "HeaderValue3"
-          ]
-        },
-        "Stage": "MyStage",
-        "Path": "/pets/dog/1",
+        "Method": "GET",
+        "Path": "/taxes",
         "QueryParameters": {
-          "QueryParameter1": [
-            "QueryParameterValue1"
-          ],
-          "QueryParameter2": [
-            "QueryParameterValue2",
-            "QueryParameterValue3"
-          ]
-        },
-        "RequestBody": {
-          "Payload": "Hello from Step Functions!"
-        },
-        "AuthType": "IAM_ROLE"
+          "cartId": ["${$.cartId}"]
+        }
       },
       "Next": "Order.UpdateOrder"
     },
@@ -249,32 +121,16 @@
       "Resource": "arn:aws:states:::apigateway:invoke",
       "Parameters": {
         "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
-        "Method": "POST",
-        "AllowNullValue": true,
+        "Method": "PATCH",
+        "Path": "/carts/${$.cartId}",
         "Headers": {
-          "Header1": [
-            "HeaderValue1"
-          ],
-          "Header2": [
-            "HeaderValue2",
-            "HeaderValue3"
-          ]
-        },
-        "Stage": "MyStage",
-        "Path": "/pets/dog/1",
-        "QueryParameters": {
-          "QueryParameter1": [
-            "QueryParameterValue1"
-          ],
-          "QueryParameter2": [
-            "QueryParameterValue2",
-            "QueryParameterValue3"
-          ]
+          "Content-Type": ["application/json"]
         },
         "RequestBody": {
-          "Payload": "Hello from Step Functions!"
-        },
-        "AuthType": "IAM_ROLE"
+          "totalAmount": "${$.totalAmount}",
+          "totalTax": "${$.totalTax}",
+          "totalDiscount": "${$.totalDiscount}"
+        }
       },
       "End": true
     }
