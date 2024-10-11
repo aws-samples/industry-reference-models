@@ -1,0 +1,159 @@
+openapi: 3.0.3
+info:
+  title: Event Service API
+  version: 1.0.0
+  description: API for managing and processing events, along with creating subscriptions for event notifications.
+
+paths:
+  /events:
+    post:
+      summary: Receive and process events
+      operationId: receiveEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventType'
+      responses:
+        '200':
+          description: Event received successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessingResponse'
+        '400':
+          description: Invalid event payload
+
+  /subscriptions:
+    get:
+      summary: Retrieve all subscriptions
+      operationId: getSubscriptions
+      responses:
+        '200':
+          description: A list of all event subscriptions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubscriptionResponse'
+        '404':
+          description: No subscriptions found
+
+    post:
+      summary: Create a new event subscription
+      operationId: createSubscription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+      responses:
+        '201':
+          description: Subscription created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '400':
+          description: Invalid request data
+
+  /subscriptions/{subscriptionId}:
+    delete:
+      summary: Remove a specific event subscription
+      operationId: deleteSubscription
+      parameters:
+        - name: subscriptionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Subscription deleted successfully
+        '404':
+          description: Subscription not found
+
+components:
+  schemas:
+    EventType:
+      type: object
+      required:
+        - eventId
+        - eventType
+        - timestamp
+      properties:
+        eventId:
+          type: string
+          description: Unique ID for the event
+        eventType:
+          type: string
+          description: The type of event (e.g., CartItemAdded, OrderCompleted)
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of when the event occurred
+        data:
+          type: object
+          description: The event payload, varying based on the eventType
+        source:
+          type: string
+          description: Source service or system that raised the event
+
+    Subscription:
+      type: object
+      required:
+        - eventType
+        - callbackUrl
+      properties:
+        eventType:
+          type: string
+          description: The type of event to subscribe to (e.g., CartItemAdded, OrderCompleted)
+        conditions:
+          type: object
+          additionalProperties:
+            type: string
+          description: Optional conditions for filtering events (e.g., productId, userId)
+        callbackUrl:
+          type: string
+          description: The webhook URL where event notifications will be sent
+        retryPolicy:
+          type: object
+          properties:
+            retryCount:
+              type: integer
+              default: 3
+            retryInterval:
+              type: string
+              description: Time interval between retries (e.g., 10s, 5m)
+
+    SubscriptionResponse:
+      type: object
+      properties:
+        subscriptionId:
+          type: string
+          description: Unique ID of the created subscription
+        eventType:
+          type: string
+          description: Event type the subscription listens to
+        callbackUrl:
+          type: string
+          description: The webhook URL for event notifications
+        conditions:
+          type: object
+          description: Any conditions specified in the subscription
+        status:
+          type: string
+          description: Status of the subscription (e.g., active, paused)
+
+    ProcessingResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of event processing (e.g., success, failure)
+        message:
+          type: string
+          description: Any additional details about the event processing
