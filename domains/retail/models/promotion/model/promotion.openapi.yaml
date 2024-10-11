@@ -1,0 +1,284 @@
+openapi: 3.0.0
+info:
+  title: Promotions API
+  description: API for managing and retrieving promotions in an e-commerce context
+  version: 1.0.0
+paths:
+  /promotions:
+    post:
+      summary: Create a new promotion
+      operationId: createPromotion
+      tags:
+        - Promotions
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromotionInput'
+      responses:
+        '201':
+          description: Promotion created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /promotions/{promotionId}:
+    put:
+      summary: Update an existing promotion
+      operationId: updatePromotion
+      tags:
+        - Promotions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: promotionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromotionInput'
+      responses:
+        '200':
+          description: Promotion updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Promotion'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Delete a promotion or make it inactive
+      operationId: deletePromotion
+      tags:
+        - Promotions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: promotionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Promotion deleted or inactivated successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /promotions/user:
+    get:
+      summary: Get applicable promotions for a user
+      operationId: getPromotionsForUser
+      tags:
+        - Promotions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: lang
+          in: query
+          schema:
+            type: string
+            default: en
+        - name: currency
+          in: query
+          schema:
+            type: string
+            default: USD
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Promotion'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /promotions/cart:
+    get:
+      summary: Get applicable promotions for a cart
+      operationId: getPromotionsForCart
+      tags:
+        - Promotions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: cartId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: lang
+          in: query
+          schema:
+            type: string
+            default: en
+        - name: currency
+          in: query
+          schema:
+            type: string
+            default: USD
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Promotion'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    PromotionInput:
+      type: object
+      required:
+        - name
+        - type
+        - value
+        - startDate
+        - endDate
+      properties:
+        name:
+          type: object
+          additionalProperties:
+            type: string
+          description: Localized promotion names
+        description:
+          type: object
+          additionalProperties:
+            type: string
+          description: Localized promotion descriptions
+        type:
+          type: string
+          enum: [percentage, fixed_amount, buy_x_get_y]
+        value:
+          type: number
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        conditions:
+          type: object
+          properties:
+            minPurchaseAmount:
+              type: number
+            applicableProducts:
+              type: array
+              items:
+                type: string
+            applicableCategories:
+              type: array
+              items:
+                type: string
+            userGroups:
+              type: array
+              items:
+                type: string
+        maxUsageCount:
+          type: integer
+        maxUsagePerUser:
+          type: integer
+        stackable:
+          type: boolean
+          default: false
+    Promotion:
+      allOf:
+        - $ref: '#/components/schemas/PromotionInput'
+        - type: object
+          required:
+            - id
+            - createdAt
+            - updatedAt
+          properties:
+            id:
+              type: string
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+            isActive:
+              type: boolean
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
