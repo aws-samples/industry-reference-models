@@ -1,0 +1,86 @@
+{
+  "Comment": "A description of my state machine",
+  "StartAt": "Order.CreateOrder",
+  "States": {
+    "Order.CreateOrder": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::apigateway:invoke",
+      "Parameters": {
+        "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+        "Method": "POST",
+        "AllowNullValue": true,
+        "Headers": {
+          "Header1": [
+            "HeaderValue1"
+          ],
+          "Header2": [
+            "HeaderValue2",
+            "HeaderValue3"
+          ]
+        },
+        "Stage": "MyStage",
+        "Path": "/pets/dog/1",
+        "QueryParameters": {
+          "QueryParameter1": [
+            "QueryParameterValue1"
+          ],
+          "QueryParameter2": [
+            "QueryParameterValue2",
+            "QueryParameterValue3"
+          ]
+        },
+        "RequestBody": {
+          "Payload": "Hello from Step Functions!"
+        },
+        "AuthType": "IAM_ROLE"
+      },
+      "Next": "For Each Product In Cart"
+    },
+    "For Each Product In Cart": {
+      "Type": "Map",
+      "ItemProcessor": {
+        "ProcessorConfig": {
+          "Mode": "INLINE"
+        },
+        "StartAt": "ProductCatalog.GetProduct",
+        "States": {
+          "ProductCatalog.GetProduct": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::apigateway:invoke",
+            "Parameters": {
+              "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+              "Method": "POST",
+              "AllowNullValue": true,
+              "Headers": {
+                "Header1": [
+                  "HeaderValue1"
+                ],
+                "Header2": [
+                  "HeaderValue2",
+                  "HeaderValue3"
+                ]
+              },
+              "Stage": "MyStage",
+              "Path": "/pets/dog/1",
+              "QueryParameters": {
+                "QueryParameter1": [
+                  "QueryParameterValue1"
+                ],
+                "QueryParameter2": [
+                  "QueryParameterValue2",
+                  "QueryParameterValue3"
+                ]
+              },
+              "RequestBody": {
+                "Payload": "Hello from Step Functions!"
+              },
+              "AuthType": "IAM_ROLE"
+            },
+            "End": true
+          }
+        }
+      },
+      "End": true
+    }
+  }
+}
