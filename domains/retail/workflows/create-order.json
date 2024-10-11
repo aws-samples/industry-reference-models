@@ -10,7 +10,9 @@
         "Method": "POST",
         "Path": "/carts",
         "Headers": {
-          "Content-Type": ["application/json"]
+          "Content-Type": [
+            "application/json"
+          ]
         },
         "RequestBody": {
           "name": "New Order Cart",
@@ -73,8 +75,12 @@
                       "Method": "GET",
                       "Path": "/promotions/cart",
                       "QueryParameters": {
-                        "cartId": ["${$.cartId}"],
-                        "userId": ["${$.customerId}"]
+                        "cartId": [
+                          "${$.cartId}"
+                        ],
+                        "userId": [
+                          "${$.customerId}"
+                        ]
                       }
                     },
                     "End": true
@@ -111,7 +117,9 @@
         "Method": "GET",
         "Path": "/taxes",
         "QueryParameters": {
-          "cartId": ["${$.cartId}"]
+          "cartId": [
+            "${$.cartId}"
+          ]
         }
       },
       "Next": "Order.UpdateOrder"
@@ -124,12 +132,36 @@
         "Method": "PATCH",
         "Path": "/carts/${$.cartId}",
         "Headers": {
-          "Content-Type": ["application/json"]
+          "Content-Type": [
+            "application/json"
+          ]
         },
         "RequestBody": {
           "totalAmount": "${$.totalAmount}",
           "totalTax": "${$.totalTax}",
           "totalDiscount": "${$.totalDiscount}"
+        }
+      },
+      "Next": "Event.Receive OrderCreatedEvent"
+    },
+    "Event.Receive OrderCreatedEvent": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::apigateway:invoke",
+      "Parameters": {
+        "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+        "Method": "POST",
+        "Path": "/events/receive",
+        "Headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "RequestBody": {
+          "eventId": "string",
+          "eventType": "string",
+          "timestamp": "2024-10-11T19:04:33.615Z",
+          "data": {},
+          "source": "string"
         }
       },
       "End": true
