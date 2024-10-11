@@ -42,43 +42,239 @@
         "ProcessorConfig": {
           "Mode": "INLINE"
         },
-        "StartAt": "ProductCatalog.GetProduct",
+        "StartAt": "Parallel",
         "States": {
-          "ProductCatalog.GetProduct": {
-            "Type": "Task",
-            "Resource": "arn:aws:states:::apigateway:invoke",
-            "Parameters": {
-              "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
-              "Method": "POST",
-              "AllowNullValue": true,
-              "Headers": {
-                "Header1": [
-                  "HeaderValue1"
-                ],
-                "Header2": [
-                  "HeaderValue2",
-                  "HeaderValue3"
-                ]
+          "Parallel": {
+            "Type": "Parallel",
+            "Branches": [
+              {
+                "StartAt": "ProductCatalog.GetProduct",
+                "States": {
+                  "ProductCatalog.GetProduct": {
+                    "Type": "Task",
+                    "Resource": "arn:aws:states:::apigateway:invoke",
+                    "Parameters": {
+                      "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+                      "Method": "POST",
+                      "AllowNullValue": true,
+                      "Headers": {
+                        "Header1": [
+                          "HeaderValue1"
+                        ],
+                        "Header2": [
+                          "HeaderValue2",
+                          "HeaderValue3"
+                        ]
+                      },
+                      "Stage": "MyStage",
+                      "Path": "/pets/dog/1",
+                      "QueryParameters": {
+                        "QueryParameter1": [
+                          "QueryParameterValue1"
+                        ],
+                        "QueryParameter2": [
+                          "QueryParameterValue2",
+                          "QueryParameterValue3"
+                        ]
+                      },
+                      "RequestBody": {
+                        "Payload": "Hello from Step Functions!"
+                      },
+                      "AuthType": "IAM_ROLE"
+                    },
+                    "End": true
+                  }
+                }
               },
-              "Stage": "MyStage",
-              "Path": "/pets/dog/1",
-              "QueryParameters": {
-                "QueryParameter1": [
-                  "QueryParameterValue1"
-                ],
-                "QueryParameter2": [
-                  "QueryParameterValue2",
-                  "QueryParameterValue3"
-                ]
+              {
+                "StartAt": "Pricing.GetPrices",
+                "States": {
+                  "Pricing.GetPrices": {
+                    "Type": "Task",
+                    "Resource": "arn:aws:states:::apigateway:invoke",
+                    "Parameters": {
+                      "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+                      "Method": "POST",
+                      "AllowNullValue": true,
+                      "Headers": {
+                        "Header1": [
+                          "HeaderValue1"
+                        ],
+                        "Header2": [
+                          "HeaderValue2",
+                          "HeaderValue3"
+                        ]
+                      },
+                      "Stage": "MyStage",
+                      "Path": "/pets/dog/1",
+                      "QueryParameters": {
+                        "QueryParameter1": [
+                          "QueryParameterValue1"
+                        ],
+                        "QueryParameter2": [
+                          "QueryParameterValue2",
+                          "QueryParameterValue3"
+                        ]
+                      },
+                      "RequestBody": {
+                        "Payload": "Hello from Step Functions!"
+                      },
+                      "AuthType": "IAM_ROLE"
+                    },
+                    "End": true
+                  }
+                }
               },
-              "RequestBody": {
-                "Payload": "Hello from Step Functions!"
+              {
+                "StartAt": "Promotion.GetPromotionsForCart",
+                "States": {
+                  "Promotion.GetPromotionsForCart": {
+                    "Type": "Task",
+                    "Resource": "arn:aws:states:::apigateway:invoke",
+                    "Parameters": {
+                      "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+                      "Method": "POST",
+                      "AllowNullValue": true,
+                      "Headers": {
+                        "Header1": [
+                          "HeaderValue1"
+                        ],
+                        "Header2": [
+                          "HeaderValue2",
+                          "HeaderValue3"
+                        ]
+                      },
+                      "Stage": "MyStage",
+                      "Path": "/pets/dog/1",
+                      "QueryParameters": {
+                        "QueryParameter1": [
+                          "QueryParameterValue1"
+                        ],
+                        "QueryParameter2": [
+                          "QueryParameterValue2",
+                          "QueryParameterValue3"
+                        ]
+                      },
+                      "RequestBody": {
+                        "Payload": "Hello from Step Functions!"
+                      },
+                      "AuthType": "IAM_ROLE"
+                    },
+                    "End": true
+                  }
+                }
               },
-              "AuthType": "IAM_ROLE"
-            },
+              {
+                "StartAt": "Customer.GetCustomer",
+                "States": {
+                  "Customer.GetCustomer": {
+                    "Type": "Task",
+                    "Resource": "arn:aws:states:::apigateway:invoke",
+                    "Parameters": {
+                      "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+                      "Method": "POST",
+                      "AllowNullValue": true,
+                      "Headers": {
+                        "Header1": [
+                          "HeaderValue1"
+                        ],
+                        "Header2": [
+                          "HeaderValue2",
+                          "HeaderValue3"
+                        ]
+                      },
+                      "Stage": "MyStage",
+                      "Path": "/pets/dog/1",
+                      "QueryParameters": {
+                        "QueryParameter1": [
+                          "QueryParameterValue1"
+                        ],
+                        "QueryParameter2": [
+                          "QueryParameterValue2",
+                          "QueryParameterValue3"
+                        ]
+                      },
+                      "RequestBody": {
+                        "Payload": "Hello from Step Functions!"
+                      },
+                      "AuthType": "IAM_ROLE"
+                    },
+                    "End": true
+                  }
+                }
+              }
+            ],
             "End": true
           }
         }
+      },
+      "Next": "Tax.GetTaxes"
+    },
+    "Tax.GetTaxes": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::apigateway:invoke",
+      "Parameters": {
+        "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+        "Method": "POST",
+        "AllowNullValue": true,
+        "Headers": {
+          "Header1": [
+            "HeaderValue1"
+          ],
+          "Header2": [
+            "HeaderValue2",
+            "HeaderValue3"
+          ]
+        },
+        "Stage": "MyStage",
+        "Path": "/pets/dog/1",
+        "QueryParameters": {
+          "QueryParameter1": [
+            "QueryParameterValue1"
+          ],
+          "QueryParameter2": [
+            "QueryParameterValue2",
+            "QueryParameterValue3"
+          ]
+        },
+        "RequestBody": {
+          "Payload": "Hello from Step Functions!"
+        },
+        "AuthType": "IAM_ROLE"
+      },
+      "Next": "Order.UpdateOrder"
+    },
+    "Order.UpdateOrder": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::apigateway:invoke",
+      "Parameters": {
+        "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+        "Method": "POST",
+        "AllowNullValue": true,
+        "Headers": {
+          "Header1": [
+            "HeaderValue1"
+          ],
+          "Header2": [
+            "HeaderValue2",
+            "HeaderValue3"
+          ]
+        },
+        "Stage": "MyStage",
+        "Path": "/pets/dog/1",
+        "QueryParameters": {
+          "QueryParameter1": [
+            "QueryParameterValue1"
+          ],
+          "QueryParameter2": [
+            "QueryParameterValue2",
+            "QueryParameterValue3"
+          ]
+        },
+        "RequestBody": {
+          "Payload": "Hello from Step Functions!"
+        },
+        "AuthType": "IAM_ROLE"
       },
       "End": true
     }
