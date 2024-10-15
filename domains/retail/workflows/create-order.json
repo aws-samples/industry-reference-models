@@ -1,0 +1,170 @@
+{
+  "Comment": "A description of my state machine",
+  "StartAt": "Order.CreateOrder",
+  "States": {
+    "Order.CreateOrder": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::apigateway:invoke",
+      "Parameters": {
+        "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+        "Method": "POST",
+        "Path": "/carts",
+        "Headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "RequestBody": {
+          "name": "New Order Cart",
+          "customerContext": {
+            "id": "${$.customerId}"
+          }
+        }
+      },
+      "Next": "For Each Product In Cart"
+    },
+    "For Each Product In Cart": {
+      "Type": "Map",
+      "ItemProcessor": {
+        "ProcessorConfig": {
+          "Mode": "INLINE"
+        },
+        "StartAt": "Parallel",
+        "States": {
+          "Parallel": {
+            "Type": "Parallel",
+            "Branches": [
+              {
+                "StartAt": "ProductCatalog.GetProduct",
+                "States": {
+                  "ProductCatalog.GetProduct": {
+                    "Type": "Task",
+                    "Resource": "arn:aws:states:::apigateway:invoke",
+                    "Parameters": {
+                      "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+                      "Method": "GET",
+                      "Path": "/products/${$.productId}"
+                    },
+                    "End": true
+                  }
+                }
+              },
+              {
+                "StartAt": "Pricing.GetPrices",
+                "States": {
+                  "Pricing.GetPrices": {
+                    "Type": "Task",
+                    "Resource": "arn:aws:states:::apigateway:invoke",
+                    "Parameters": {
+                      "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+                      "Method": "GET",
+                      "Path": "/prices/${$.priceId}"
+                    },
+                    "End": true
+                  }
+                }
+              },
+              {
+                "StartAt": "Promotion.GetPromotionsForCart",
+                "States": {
+                  "Promotion.GetPromotionsForCart": {
+                    "Type": "Task",
+                    "Resource": "arn:aws:states:::apigateway:invoke",
+                    "Parameters": {
+                      "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+                      "Method": "GET",
+                      "Path": "/promotions/cart",
+                      "QueryParameters": {
+                        "cartId": [
+                          "${$.cartId}"
+                        ],
+                        "userId": [
+                          "${$.customerId}"
+                        ]
+                      }
+                    },
+                    "End": true
+                  }
+                }
+              },
+              {
+                "StartAt": "Customer.GetCustomer",
+                "States": {
+                  "Customer.GetCustomer": {
+                    "Type": "Task",
+                    "Resource": "arn:aws:states:::apigateway:invoke",
+                    "Parameters": {
+                      "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+                      "Method": "GET",
+                      "Path": "/customers/${$.customerId}"
+                    },
+                    "End": true
+                  }
+                }
+              }
+            ],
+            "End": true
+          }
+        }
+      },
+      "Next": "Tax.GetTaxes"
+    },
+    "Tax.GetTaxes": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::apigateway:invoke",
+      "Parameters": {
+        "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+        "Method": "GET",
+        "Path": "/taxes",
+        "QueryParameters": {
+          "cartId": [
+            "${$.cartId}"
+          ]
+        }
+      },
+      "Next": "Order.UpdateOrder"
+    },
+    "Order.UpdateOrder": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::apigateway:invoke",
+      "Parameters": {
+        "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+        "Method": "PATCH",
+        "Path": "/carts/${$.cartId}",
+        "Headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "RequestBody": {
+          "totalAmount": "${$.totalAmount}",
+          "totalTax": "${$.totalTax}",
+          "totalDiscount": "${$.totalDiscount}"
+        }
+      },
+      "Next": "Event.Receive OrderCreatedEvent"
+    },
+    "Event.Receive OrderCreatedEvent": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::apigateway:invoke",
+      "Parameters": {
+        "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+        "Method": "POST",
+        "Path": "/events/receive",
+        "Headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "RequestBody": {
+          "eventId": "string",
+          "eventType": "string",
+          "timestamp": "2024-10-11T19:04:33.615Z",
+          "data": {},
+          "source": "string"
+        }
+      },
+      "End": true
+    }
+  }
+}
