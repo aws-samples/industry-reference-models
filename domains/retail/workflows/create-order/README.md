@@ -20,6 +20,9 @@ graph TD
     C --> D["Order.UpdateOrder"]
     D --> E["Event.Receive OrderCreatedEvent"]
     E --> F["End"]
+
+    %% Click Actions
+    click A href "./aws-samples/industry-reference-models/domains/retail/models/order"
 ```
 
 ## Workflow Steps
