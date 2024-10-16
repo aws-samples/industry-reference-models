@@ -22,7 +22,12 @@ graph TD
     E --> F["End"]
 
     %% Click Actions
-    click A href "./aws-samples/industry-reference-models/domains/retail/models/order"
+    click A href "https://github.com/aws-samples/industry-reference-models/tree/main/domains/retail/models/order#post"
+    click P1 href "https://github.com/aws-samples/industry-reference-models/tree/main/domains/retail/models/product-catalog#productsproductid"
+    click P2 href "https://github.com/aws-samples/industry-reference-models/tree/main/domains/retail/models/pricing#pricespriceid"
+    click P3 href "https://github.com/aws-samples/industry-reference-models/tree/main/domains/retail/models/promotion"
+    click C href "https://github.com/aws-samples/industry-reference-models/tree/main/domains/retail/models/tax#1-calculate-tax"
+    click D href "https://github.com/aws-samples/industry-reference-models/tree/main/domains/retail/models/order#put"
 ```
 
 ## Workflow Steps
