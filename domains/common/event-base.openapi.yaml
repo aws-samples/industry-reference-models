@@ -1,0 +1,39 @@
+openapi: 3.0.0
+info:
+  title: Event Base Schema
+  description: Defines the structure of the base event class for an event-driven architecture.
+  version: 1.0.0
+components:
+  schemas:
+    EventBase:
+      type: object
+      required:
+        - eventType
+        - version
+        - eventId
+        - timestamp
+        - sender
+      properties:
+        eventType:
+          type: string
+          description: The type of the event (e.g., ItemAddedToCart, OrderSubmitted).
+          example: "ItemAddedToCart"
+        version:
+          type: integer
+          description: Version of the event schema.
+          example: 1
+        eventId:
+          type: string
+          format: uuid
+          description: Unique identifier for the event, always a UUID.
+          example: "8bdf761e-1c84-4e31-bbea-59321c1f1292"
+        timestamp:
+          type: string
+          format: date-time
+          description: The time when the event occurred in ISO 8601 format.
+          example: "2024-10-08T12:45:30Z"
+        sender:
+          type: string
+          description: The system or service that emitted the event.
+          example: "cart-service"
+
