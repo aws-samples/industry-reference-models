@@ -139,6 +139,7 @@ paths:
 
 components:
   schemas:
+    
     OrderStatus:
       type: string
       enum:
@@ -226,3 +227,655 @@ components:
         - CURBSIDE_RETURN
         - LOCKER
         - DROP_OFF_LOCATION
+
+
+
+    CreateOrderRequest:
+      type: object
+      properties:
+        storeId:
+          type: string
+        cartId:
+          type: string
+          pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+        items:
+          $ref: '#/components/schemas/OrderItems'
+        customerId:
+          type: string
+        customer:
+          $ref: '#/components/schemas/CustomerSummary'
+        substituteItems:
+          $ref: '#/components/schemas/SubstituteItems'
+        restrictions:
+          type: string
+        fulfillment:
+          $ref: '#/components/schemas/FulfillmentSummary'
+        payment:
+          $ref: '#/components/schemas/PaymentTransactions'
+        billing:
+          $ref: '#/components/schemas/BillingSummary'
+        orderNotes:
+          type: string
+
+    CreateOrderResponse:
+      type: object
+      properties:
+        orderNumber:
+          type: string
+          pattern: ^[A-Za-z0-9]+$
+        storeId:
+          type: string
+        cartId:
+          type: string
+          pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+        items:
+          $ref: '#/components/schemas/OrderItems'
+        customerId:
+          type: string
+        customer:
+          $ref: '#/components/schemas/CustomerSummary'
+        OrderStatus:
+          $ref: '#/components/schemas/OrderStatus'
+        created:
+          type: string
+          format: date-time
+        modified:
+          type: string
+          format: date-time
+        payment:
+          $ref: '#/components/schemas/PaymentTransactions'
+        billing:
+          $ref: '#/components/schemas/BillingSummary'
+        fulfillment:
+          $ref: '#/components/schemas/FulfillmentSummary'
+        fulfillmentGroups:
+          $ref: '#/components/schemas/FulfillmentGroups'
+        orderNotes:
+          type: string
+
+    GetOrdersResponse:
+      type: object
+      properties:
+        orders: 
+          $ref: '#/components/schemas/Orders'
+        nextToken:
+          type: string
+        totalCount: 
+          type: integer
+
+    GetOrderResponse:
+      type: object
+      properties:
+        orderNumber:
+          type: string
+        storeId:
+          type: string
+        cartId:
+          type: string
+        items:
+          $ref: '#/components/schemas/OrderItems'
+        substituteItems:
+          $ref: '#/components/schemas/SubstituteItems'
+        customerId:
+          type: string
+        customer:
+          $ref: '#/components/schemas/CustomerSummary'
+        orderStatus:
+          $ref: '#/components/schemas/OrderStatus'
+        restrictions:
+          type: string
+        created:
+          type: string
+          format: date-time
+        modified:
+          type: string
+          format: date-time
+        payment:
+          $ref: '#/components/schemas/PaymentTransactions'
+        billing:
+          $ref: '#/components/schemas/BillingSummary'
+        fulfillment:
+          $ref: '#/components/schemas/FulfillmentSummary'
+        fulfillmentGroups:
+          $ref: '#/components/schemas/FulfillmentGroups'
+        refund:
+          $ref: '#/components/schemas/RefundSummary'
+        return:
+          $ref: '#/components/schemas/ReturnSummary'
+        orderNotes:
+          type: string
+        orderHistory: 
+          $ref: '#/components/schemas/OrderHistoryList'
+
+    UpdateOrderRequest:
+      type: object
+      properties:
+        orderNumber:
+          type: string
+        storeId:
+          type: string
+        items:
+          $ref: '#/components/schemas/OrderItems'
+        substituteItems:
+          $ref: '#/components/schemas/SubstituteItems'
+        customer:
+          $ref: '#/components/schemas/CustomerSummary'
+        orderStatus:
+          $ref: '#/components/schemas/OrderStatus'
+        restrictions:
+          type: string
+        modified:
+          type: string
+          format: date-time
+        payment:
+          $ref: '#/components/schemas/PaymentTransactions'
+        billing:
+          $ref: '#/components/schemas/BillingSummary'
+        fulfillment:
+          $ref: '#/components/schemas/FulfillmentSummary'
+        fulfillmentGroups:
+          $ref: '#/components/schemas/FulfillmentGroups'
+        refund:
+          $ref: '#/components/schemas/RefundSummary'
+        return:
+          $ref: '#/components/schemas/ReturnSummary'
+        orderNotes:
+          type: string
+        orderHistory: 
+          $ref: '#/components/schemas/OrderHistoryList'
+
+    UpdateOrderResponse:
+      type: object
+      properties:
+        orderNumber:
+          type: string
+        storeId:
+          type: string
+        cartId:
+          type: string
+        items:
+          $ref: '#/components/schemas/OrderItems'
+        substituteItems:
+          $ref: '#/components/schemas/SubstituteItems'
+        customerId:
+          type: string
+        customer:
+          $ref: '#/components/schemas/CustomerSummary'
+        orderStatus:
+          $ref: '#/components/schemas/OrderStatus'
+        restrictions:
+          type: string
+        created:
+          type: string
+          format: date-time
+        modified:
+          type: string
+          format: date-time
+        payment:
+          $ref: '#/components/schemas/PaymentTransactions'
+        billing:
+          $ref: '#/components/schemas/BillingSummary'
+        fulfillment:
+          $ref: '#/components/schemas/FulfillmentSummary'
+        fulfillmentGroups:
+          $ref: '#/components/schemas/FulfillmentGroups'
+        refund:
+          $ref: '#/components/schemas/RefundSummary'
+        return:
+          $ref: '#/components/schemas/ReturnSummary'
+        orderNotes:
+          type: string
+        orderHistory: 
+          $ref: '#/components/schemas/OrderHistoryList'
+          
+
+    
+    Orders:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderSummary'
+
+    OrderSummary:
+      type: object
+      properties:
+        orderNumber:
+          type: string
+        storeId:
+          type: string
+        cartId:
+          type: string
+        items:
+          $ref: '#/components/schemas/OrderItems'
+        substituteItems:
+          $ref: '#/components/schemas/SubstituteItems'
+        customerId:
+          type: string
+        customer:
+          $ref: '#/components/schemas/CustomerSummary'
+        orderStatus:
+          $ref: '#/components/schemas/OrderStatus'
+        restrictions:
+          type: string
+        created:
+          type: string
+          format: date-time
+        modified:
+          type: string
+          format: date-time
+        payment:
+          $ref: '#/components/schemas/PaymentTransactions'
+        billing:
+          $ref: '#/components/schemas/BillingSummary'
+        fulfillment:
+          $ref: '#/components/schemas/FulfillmentSummary'
+        fulfillmentGroups:
+          $ref: '#/components/schemas/FulfillmentGroups'
+        refund:
+          $ref: '#/components/schemas/RefundSummary'
+        return:
+          $ref: '#/components/schemas/ReturnSummary'
+        orderNotes:
+          type: string
+
+    OrderHistoryList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderSummary'
+
+
+    OrderItems:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemSummary'
+
+    ItemSummary:
+      type: object
+      properties:
+        productId:
+          type: string
+        sku:
+          type: string
+        name:
+          type: string
+        shortDescription:
+          type: string
+        brand:
+          type: string
+        category:
+          $ref: '#/components/schemas/CategoryList'
+        quantity:
+          type: integer
+        weight:
+          type: integer
+        weightUnit:
+          type: string
+        unitPrice:
+          type: integer
+        currency:
+          type: string
+        promotions: 
+          $ref: '#/components/schemas/PromotionsList'
+        discounts: 
+          $ref: '#/components/schemas/DiscountList'
+        attributes: 
+          $ref: '#/components/schemas/AttributeList'
+        return: 
+          $ref: '#/components/schemas/ReturnSummary'
+        refund: 
+          $ref: '#/components/schemas/RefundSummary'
+
+
+    CategoryList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CategorySummary'
+
+    CategorySummary:
+      type: object
+      properties:
+        categoryId:
+          type: string
+        name:
+          type: string
+
+
+    PromotionsList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PromotionSummary'
+
+    PromotionSummary:
+      type: object
+      properties:
+        promotionId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+
+
+    DiscountList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscountSummary'
+
+    DiscountSummary:
+      type: object
+      properties:
+        discountId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        amount:
+          type: integer
+
+
+    AttributeList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttributeItem'
+
+    AttributeItem:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+
+
+    ReturnSummary:
+      type: object
+      properties:
+        returnCode:
+          type: string
+        returnStatus:
+            $ref: '#/components/schemas/ReturnStatus'
+        returnMethod:
+             $ref: '#/components/schemas/ReturnMethod'
+        returnReason:
+          type: string
+        returnDate:
+          type: string
+          format: date-time
+        notes:
+          type: string
+
+    RefundSummary:
+      type: object
+      properties:
+        refundCode:
+          type: string
+        refundStatus: 
+             $ref: '#/components/schemas/RefundStatus'
+        refundedAmount:
+          type: integer
+        currency:
+          type: string
+        refundMethod:
+          type: string
+        refundDate:
+          type: string
+          format: date-time
+        notes:
+          type: string
+
+
+    CustomerSummary:
+      type: object
+      properties:
+        customerId: 
+          type: string
+        firstName: 
+          type: string
+        lastName: 
+          type: string
+        email: 
+          type: string
+        countryCode: 
+          type: string
+        billingAddress: 
+          $ref: '#/components/schemas/Address'
+        shippingAddress: 
+          $ref: '#/components/schemas/Address'
+
+    Address:
+      type: object
+      properties:
+        street:
+          description: "The street line of the address."
+          type: string
+        city:
+          description: "The city of the address."
+          type: string
+        state:
+          description: "The state or province of the address."
+          type: string
+        zipCode:
+          description: "The postal or zip code of the address."
+          type: string
+        country:
+          description: "The country of the address."
+          type: string
+
+
+    SubstituteItems:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubstitutionItem'
+
+    SubstitutionItem:
+      type: object
+      properties:
+        productId:
+          type: string
+        sku:
+          type: string
+        name:
+          type: string
+        shortDescription:
+          type: string
+        brand:
+          type: string
+        category: 
+          $ref: '#/components/schemas/CategoryList'
+        quantity:
+          type: integer
+        weight:
+          type: integer
+        weightUnit:
+          type: string
+        unitPrice:
+          type: integer
+        currency:
+          type: string
+        promotions: 
+          $ref: '#/components/schemas/PromotionsList'
+        discounts: 
+          $ref: '#/components/schemas/DiscountList'
+        attributes: 
+          $ref: '#/components/schemas/AttributeList'
+        itemToSubstitute: 
+          $ref: '#/components/schemas/ItemSummary'
+        return: 
+          $ref: '#/components/schemas/ReturnSummary'
+        refund: 
+          $ref: '#/components/schemas/RefundSummary'
+
+
+    FulfillmentSummary:
+      type: object
+      properties:
+        fulfillmentStatus: 
+          $ref: '#/components/schemas/FulfillmentStatus'
+        estimatedDeliveryDate:
+          type: string
+          format: date-time
+        shippingRate:
+          type: integer
+        currency:
+          type: string
+        trackingNumber:
+          type: string
+        carrier:
+          type: string
+        shippingMethod:
+          type: string
+        shippingAddress:
+          $ref: '#/components/schemas/Address'
+        shippedDate: 
+          type: string
+          format: date-time
+        deliverDate: 
+          type: string
+          format: date-time
+        notes:
+          type: string
+
+    FulfillmentGroups:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/FulfillmentGroup'
+
+    FulfillmentGroup:
+      type: object
+      description: "Fulfillment groups can be used for multi-part fulfillment."
+      properties:
+        groupId:  
+          type: string
+        items: 
+          $ref: '#/components/schemas/OrderItems'
+        fulfillment: 
+          $ref: '#/components/schemas/FulfillmentSummary'
+        payment: 
+          $ref: '#/components/schemas/PaymentSummary'
+        notes:  
+          type: string
+
+
+    PaymentTransactions:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentSummary'
+
+    PaymentSummary:
+      type: object
+      properties:
+        paymentMethod: 
+          type: string
+        totalAmount:
+          type: integer
+        currency: 
+          type: string
+        transactionId: 
+          type: string
+        auhtorizationCode: 
+          type: string
+        paymentStatus: 
+          $ref: '#/components/schemas/PaymentStatus'
+
+
+    BillingSummary:
+      type: object
+      properties:
+        subtotal:
+          type: integer
+        taxes: 
+          $ref: '#/components/schemas/TaxSummary'
+        promotions: 
+          $ref: '#/components/schemas/PromotionsList'
+        discounts: 
+          $ref: '#/components/schemas/DiscountList'
+        shippingAmount:
+          type: integer
+        fees: 
+          $ref: '#/components/schemas/FeeList'
+        totalAmount:
+          type: integer
+        currency: 
+          type: string
+
+
+    TaxSummary:
+      type: object
+      properties:
+        taxableAmount: 
+          type: integer
+        taxAmount: 
+          type: integer
+        taxes: 
+          $ref: '#/components/schemas/TaxList'
+        totalAmount: 
+          type: integer
+        currency: 
+          type: string
+
+    TaxList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxItem'
+
+    TaxItem:
+      type: object
+      properties:
+        taxName: 
+            type: string
+        taxAmount: 
+            type: integer
+        currency: 
+            type: string
+        taxRate: 
+            type: integer
+
+
+    FeeList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeeItem'
+
+    FeeItem:
+      type: object
+      properties:
+        key: 
+            type: string
+        value: 
+            type: integer
