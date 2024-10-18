@@ -3,6 +3,7 @@ info:
   title: Event Base Schema
   description: Defines the structure of the base event class for an event-driven architecture.
   version: 1.0.0
+paths: {}
 components:
   schemas:
     EventBase:
