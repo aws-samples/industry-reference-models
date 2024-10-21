@@ -19,7 +19,7 @@ paths:
             schema:
               $ref: '#/components/schemas/EventType'
       responses:
-        '200':
+        '202':
           description: Event received successfully
           content:
             application/json:
@@ -36,6 +36,7 @@ components:
         - eventId
         - eventType
         - timestamp
+        - source
       properties:
         eventId:
           type: string
@@ -57,9 +58,6 @@ components:
     ProcessingResponse:
       type: object
       properties:
-        status:
-          type: string
-          description: Status of event processing (e.g., success, failure)
         message:
           type: string
           description: Any additional details about the event processing
