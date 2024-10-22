@@ -196,12 +196,10 @@ components:
     PricingRuleId:
       type: string
       description: "The unique identifier for the pricing rule."
-      pattern: '^[A-Za-z0-9 ]+$'
 
     PriceId:
       type: string
       description: "The unique identifier for the price."
-      pattern: '^[A-Za-z0-9 ]+$'
 
     ItemSku:
       type: string
