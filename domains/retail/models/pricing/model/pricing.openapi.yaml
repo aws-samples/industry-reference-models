@@ -52,6 +52,27 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+    post:
+      summary: "Creates a new pricing rule."
+      operationId: CreatePriceRule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePriceRuleRequest'
+      responses:
+        '201':
+          description: "The created pricing rule."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePriceRuleResponse'
+        '400':
+          $ref: '#/components/responses/InvalidRequestException'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
   /pricing-rules/{pricingRuleId}:
     parameters:
       - name: pricingRuleId
@@ -71,27 +92,6 @@ paths:
                 $ref: '#/components/schemas/GetPriceRuleResponse'
         '404':
           $ref: '#/components/responses/PriceRuleNotFoundException'
-        '400':
-          $ref: '#/components/responses/InvalidRequestException'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-    post:
-      summary: "Creates a new pricing rule."
-      operationId: CreatePriceRule
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreatePriceRuleRequest'
-      responses:
-        '201':
-          description: "The created pricing rule."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreatePriceRuleResponse'
         '400':
           $ref: '#/components/responses/InvalidRequestException'
         '500':
