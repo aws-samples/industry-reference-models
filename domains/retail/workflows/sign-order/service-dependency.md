@@ -1,41 +1,41 @@
-# Service Dependency Diagram
+# サービス依存関係図
 
-This diagram illustrates the dependencies between various clients and services in our system.
+この図は、システム内の様々なクライアントとサービス間の依存関係を示しています。
 
 ```mermaid
 graph TD
-    POS[POS] --> OSS[Order Signing Service]
-    MP[Marketplace] --> OSS
-    EC1[EC: Phase 1] --> OSS
-    OSS --> OS[Order Service]
-    COS[Custom Order Site] --> OS
-    MS[Mobile Site] --> OS
-    EC2[EC: Phase 2] --> OS
+    POS[POS] --> OSS[注文署名サービス]
+    MP[マーケットプレイス] --> OSS
+    EC1[EC: フェーズ1] --> OSS
+    OSS --> OS[注文サービス]
+    COS[カスタム注文サイト] --> OS
+    MS[モバイルサイト] --> OS
+    EC2[EC: フェーズ2] --> OS
 ```
 
-## Description
+## 説明
 
-The diagram shows the following relationships:
+この図は以下の関係を示しています：
 
-1. **POS** (Point of Sale) calls the **Order Signing Service**
-2. **Marketplace** calls the **Order Signing Service**
-3. **EC** (E-Commerce) calls the **Order Signing Service** in Phase 1
-4. The **Order Signing Service** calls the **Order Service**
-5. **Custom Order Site** calls the **Order Service**
-6. **Mobile Site** calls the **Order Service**
-7. **EC** (E-Commerce) calls the **Order Service** in Phase 2
+1. **POS**（販売時点情報管理）が**注文署名サービス**を呼び出します
+2. **マーケットプレイス**が**注文署名サービス**を呼び出します
+3. **EC**（eコマース）がフェーズ1で**注文署名サービス**を呼び出します
+4. **注文署名サービス**が**注文サービス**を呼び出します
+5. **カスタム注文サイト**が**注文サービス**を呼び出します
+6. **モバイルサイト**が**注文サービス**を呼び出します
+7. **EC**（eコマース）がフェーズ2で**注文サービス**を呼び出します
 
-This visualization helps to understand the flow of data and dependencies between different components of the system.
+この視覚化により、システムの異なるコンポーネント間のデータの流れと依存関係を理解することができます。
 
-## Legend
+## 凡例
 
-- POS: Point of Sale
-- EC: E-Commerce
-- OSS: Order Signing Service
-- OS: Order Service
+- POS: 販売時点情報管理
+- EC: eコマース
+- OSS: 注文署名サービス
+- OS: 注文サービス
 
-## Notes
+## 注記
 
-- The EC system has two phases of integration:
-  - Phase 1: Integrates with the Order Signing Service
-  - Phase 2: Directly integrates with the Order Service
+- ECシステムには2つの統合フェーズがあります：
+  - フェーズ1: 注文署名サービスと統合
+  - フェーズ2: 注文サービスと直接統合
