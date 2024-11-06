@@ -1,0 +1,105 @@
+{
+  "Comment": "Order Signing Workflow",
+  "StartAt": "GetOrder",
+  "States": {
+    "GetOrder": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::apigateway:invoke",
+      "Parameters": {
+        "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+        "Method": "GET",
+        "Path": "/order/${$.orderId}"
+      },
+      "Next": "CreateFulfillmentPlan",
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "Next": "HandleError"
+        }
+      ]
+    },
+    "CreateFulfillmentPlan": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::apigateway:invoke",
+      "Parameters": {
+        "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+        "Method": "POST",
+        "Path": "/fulfillment/plan",
+        "Body": {
+          "order": "${$.order}"
+        }
+      },
+      "Next": "CheckForValidationErrors",
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "Next": "HandleError"
+        }
+      ]
+    },
+    "CheckForValidationErrors": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.fulfillmentPlan.validationErrors",
+          "IsPresent": true,
+          "Next": "HandleValidationErrors"
+        }
+      ],
+      "Default": "RaiseOrderSignedEvent"
+    },
+    "RaiseOrderSignedEvent": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::apigateway:invoke",
+      "Parameters": {
+        "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+        "Method": "POST",
+        "Path": "/events/orderSigned",
+        "Body": {
+          "orderId": "${$.order.orderId}"
+        }
+      },
+      "End": true,
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "Next": "HandleError"
+        }
+      ]
+    },
+    "HandleValidationErrors": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::apigateway:invoke",
+      "Parameters": {
+        "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+        "Method": "POST",
+        "Path": "/order/validationErrors",
+        "Body": {
+          "orderId": "${$.order.orderId}",
+          "errors": "${$.fulfillmentPlan.validationErrors}"
+        }
+      },
+      "End": true,
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "Next": "HandleError"
+        }
+      ]
+    },
+    "HandleError": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::apigateway:invoke",
+      "Parameters": {
+        "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+        "Method": "POST",
+        "Path": "/errors/log",
+        "Body": {
+          "workflow": "OrderSigning",
+          "error": "${$}"
+        }
+      },
+      "End": true
+    }
+  }
+}
