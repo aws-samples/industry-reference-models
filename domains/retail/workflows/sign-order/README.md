@@ -15,21 +15,14 @@ API Gateway will be Invoked from the Step Function for each action the process n
 
 ### Example API Gateway Invoke Request
 ```json
-"FulfillOrder": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::apigateway:invoke",
-      "Parameters": {
-        "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
-        "Method": "POST",
-        "AllowNullValue": true,
-        "Stage": "prod",
-        "Path": "/fulfillment",
-        "RequestBody": {
-          "Payload": "TODO"
-        },
-        "AuthType": "IAM_ROLE"
-      },
-      "End": true
-    }
-  }
+"Customer.GetCustomer": {
+                    "Type": "Task",
+                    "Resource": "arn:aws:states:::apigateway:invoke",
+                    "Parameters": {
+                      "ApiEndpoint": "MyApiId.execute-api.us-east-1.amazonaws.com",
+                      "Method": "GET",
+                      "Path": "/customers/${$.customerId}"
+                    },
+                    "End": true
+                  }
 ```
