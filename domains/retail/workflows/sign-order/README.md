@@ -26,3 +26,8 @@ API Gateway will be Invoked from the Step Function for each action the process n
                     "End": true
                   }
 ```
+
+The pattern we use for the `path` is `{serviceName}/{actionPath}` where:
+
+1. **serviceName** is the name of the service, like `customer` or `payment` or `fulfillment`
+2. **actionPath** is the rest of of the URL path.
